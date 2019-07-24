@@ -29,7 +29,7 @@ class Store extends Component {
     retrieveAuthenticationToken(() => {
       this.props.authenticateUser(true);
     });
-    await AsyncStorage.removeItem(SHOPMATE_CART_ID);
+    //  await AsyncStorage.removeItem(SHOPMATE_CART_ID);
     // get product incart
     const cartId = await AsyncStorage.getItem(SHOPMATE_CART_ID);
     cartId ? getProductInCart(cartId) : null;
