@@ -20,8 +20,8 @@ export const placeCustomerOrder = (
   };
   dispatch({
     type: PLACE_ORDER_START,
-    placeOrderPending: true,
-    placeOrderError: false
+    paymentPending: true,
+    paymentError: false
   });
 
   try {
@@ -36,31 +36,35 @@ export const placeCustomerOrder = (
       config
     );
 
-    let orderId = createOrder.data.orderId;
-    console.log(orderId, stripeToken);
+    let order_id = createOrder.data.orderId;
+
     // process customer current order with stripe
-    const stripePayment = await axios.post(
+    const { status, data } = await axios.post(
       `${API_URL}/stripe/charge`,
       {
         stripeToken,
-        order_id: orderId,
+        order_id,
         description,
         amount,
         currency
       },
       config
     );
-    console.log("Payment Result", stripePayment);
-    dispatch({
-      type: PLACE_ORDER_SUCCESS,
-      placeOrderPending: false
-    });
+    if (status === 200) {
+      dispatch({
+        type: PLACE_ORDER_SUCCESS,
+        paymentPending: false,
+        result: data
+      });
+    }
+
+    console.log(data);
   } catch (error) {
     console.log(error.response);
     dispatch({
       type: PLACE_ORDER_FAILURE,
-      placeOrderPending: false,
-      placeOrderError: true,
+      paymentPending: false,
+      paymentError: true,
       errorMessage: error.response
     });
   }

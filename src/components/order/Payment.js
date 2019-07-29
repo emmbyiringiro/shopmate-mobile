@@ -6,7 +6,8 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
-  AsyncStorage
+  AsyncStorage,
+  Picker
 } from "react-native";
 import { Input, Button, Icon } from "react-native-elements";
 import RadioForm, {
@@ -22,6 +23,7 @@ import {
   retrieveAuthenticationToken
 } from "../../utils";
 import { getTaxes } from "../../actions/tax";
+import { getShippingRegions } from "../../actions/shipping-regions";
 import { SHOPMATE_CART_ID } from "../../constants";
 
 // This import applied to expo client environment only
@@ -38,7 +40,8 @@ class Payment extends Component {
     stripeToken: null,
     loadingToken: false,
     errorToken: null,
-    amount: 0
+    amount: 0,
+    shippingId: 1
   };
 
   componentWillMount() {
@@ -47,24 +50,34 @@ class Payment extends Component {
       androidPayMode: "test"
     });
   }
-  componentDidMount() {
+  async componentDidMount() {
     // Get taxes rates  from backend server
-    this.props.getTaxes();
+    await this.props.getTaxes();
+    //Get Shipping regions from backend server
+    await this.props.getShippingRegions();
   }
   placeOrderBackend = async () => {
-    const { stripeToken, description, taxId, taxPercentage } = this.state;
+    const {
+      stripeToken,
+      description,
+      taxId,
+      taxPercentage,
+      shippingId
+    } = this.state;
 
     const { cart } = this.props;
     // current customer cart id
     const cartId = await AsyncStorage.getItem(SHOPMATE_CART_ID);
     // total order amount
     let amount = calculateOrderAmount(cart, taxPercentage);
+    // Backend API  restricted amount not  less than 50 cents - convert
+    // amount to dollar currency by * 100
     amount = Number(amount) * 100;
 
     // create order params object
     const order = {
       cart_id: cartId,
-      shipping_id: 1,
+      shipping_id: shippingId,
       tax_id: taxId
     };
     // stripe payment params object
@@ -90,6 +103,36 @@ class Payment extends Component {
       console.log(error);
       this.setState({ errorToken: error });
     }
+  };
+
+  _renderShippingRegions = () => {
+    const { shippingRegions, isshippingRegionsFetching } = this.props;
+
+    if (isshippingRegionsFetching) {
+      return (
+        <View>
+          <ActivityIndicator color={theme.primary} size="small" />
+        </View>
+      );
+    }
+    return (
+      <Picker
+        selectedValue={this.state.shippingId}
+        onValueChange={value => {
+          this.setState({ shippingId: value });
+        }}
+      >
+        {shippingRegions.map(region => {
+          return (
+            <Picker.Item
+              key={region.shipping_region_id}
+              label={region.shipping_region}
+              value={region.shipping_region_id}
+            />
+          );
+        })}
+      </Picker>
+    );
   };
   _renderOrderDescription = () => {
     return (
@@ -155,7 +198,6 @@ class Payment extends Component {
           animation={true}
           onPress={(value, taxId) => {
             this.setState({ taxPercentage: value, taxId });
-            console.log(this.state.taxId);
           }}
         />
         <View />
@@ -163,6 +205,11 @@ class Payment extends Component {
     );
   };
   render() {
+    const { navigation, customerPaid } = this.props;
+    if (customerPaid) {
+      navigation.navigate("ThankYou");
+    }
+
     return (
       <View style={styles.containerStyle}>
         <View style={styles.headerStyle}>
@@ -173,6 +220,10 @@ class Payment extends Component {
           {this._renderOrderTotals()}
         </View>
         {this._renderOrderDescription()}
+        <View style={styles.headerStyle}>
+          <Text style={styles.headerTextStyle}> Shipping Region :</Text>
+        </View>
+        {this._renderShippingRegions()}
 
         <View style={styles.placeOrderButtonContainer}>
           <Button
@@ -183,6 +234,7 @@ class Payment extends Component {
             buttonStyle={{
               backgroundColor: theme.black
             }}
+            disabled={this.props.isshippingRegionsFetching}
           />
         </View>
       </View>
@@ -194,7 +246,10 @@ const mapStateToProps = state => {
     taxes: state.taxes.result,
     isTaxesFetching: state.taxes.isFetching,
     cart: state.cart.result,
-    cartId: state.cartId.cartId
+    cartId: state.cartId.cartId,
+    shippingRegions: state.shippingRegions.result,
+    isshippingRegionsFetching: state.shippingRegions.isFetching,
+    customerPaid: state.order.result.paid
   };
 };
 const styles = StyleSheet.create({
@@ -226,5 +281,5 @@ const styles = StyleSheet.create({
 
 export default connect(
   mapStateToProps,
-  { getTaxes, placeCustomerOrder }
+  { getTaxes, getShippingRegions, placeCustomerOrder }
 )(Payment);

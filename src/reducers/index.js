@@ -9,6 +9,7 @@ import { cart } from "./cart";
 import { reviews } from "./reviews";
 import { productAttributes } from "./attributes";
 import { taxes } from "./tax";
+import { order } from "./order";
 
 import { fetchError, isFetching, isUserSearching } from "./services";
 import { categories } from "./categories";
@@ -31,5 +32,6 @@ export default combineReducers({
   isFetching,
   isUserSearching,
   taxes,
-  shippingRegionId
+  shippingRegionId,
+  order
 });
