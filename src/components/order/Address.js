@@ -7,6 +7,7 @@ import { required, email, numericality } from "redux-form-validators";
 import axios from "axios";
 import { connect } from "react-redux";
 import { theme } from "../../color-themes";
+import { getShippingRegions } from "../../actions/shipping-regions";
 import {
   SHOPMATE_CUSTOMER_ADDRESS,
   DEVICE_HEIGHT,
@@ -46,6 +47,10 @@ class Address extends Component {
       // shipping address
       this.props.onAddressSubmitted();
     });
+  }
+
+  componentDidMount() {
+    this.props.getShippingRegions();
   }
   // Handle shipping address submit
   // the function executed only when address
@@ -275,4 +280,7 @@ const styles = StyleSheet.create({
 });
 
 const decoratedForm = reduxForm({ form: "address" })(Address);
-export default connect(mapStateToProps)(decoratedForm);
+export default connect(
+  mapStateToProps,
+  { getShippingRegions }
+)(decoratedForm);

@@ -86,7 +86,7 @@ export class CheckoutWrapper extends Component {
             nextBtnTextStyle={{ color: theme.primary }}
           >
             <View>
-              <Payment />
+              <Payment {...this.props} />
             </View>
           </ProgressStep>
         </ProgressSteps>

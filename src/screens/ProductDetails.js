@@ -20,7 +20,6 @@ import {
 import { thumToImage, thumToImage2, validateQuantity } from "./../../src/utils";
 import { theme } from "./../color-themes";
 import { addToCart } from "./../actions/cart/";
-import { getShippingRegions } from "../actions/shipping-regions";
 import { getProductAttributes } from "../actions/attributes";
 import ReviewsList from "../components/reviews/ReviewsList";
 import NumericInput from "react-native-numeric-input";
@@ -44,7 +43,6 @@ class ProductDetails extends Component {
     const { navigation } = this.props;
     const { product_id } = navigation.state.params;
 
-    this.props.getShippingRegions();
     this.props.getProductAttributes(product_id);
 
     const cartId = await AsyncStorage.getItem(`${SHOPMATE_CART_ID}`);
@@ -347,7 +345,7 @@ export default connect(
   mapStateToProps,
   {
     addToCart,
-    getShippingRegions,
+
     getProductAttributes
   }
 )(ProductDetails);

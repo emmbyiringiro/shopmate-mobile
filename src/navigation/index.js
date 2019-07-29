@@ -14,11 +14,11 @@ import { DEVICE_WIDTH } from "../constants";
 import Account from "../screens/Account";
 
 const AppStackNavigator = createStackNavigator({
+  ThankYou: { screen: ThankYou },
   Store: { screen: Store },
 
   Checkout: { screen: Checkout },
   ThankYou: { screen: ThankYou },
-  Store: { screen: Store },
 
   ProductDetails: { screen: ProductDetails },
 
