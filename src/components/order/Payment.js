@@ -1,7 +1,13 @@
 /* @flow */
 
 import React, { Component } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  AsyncStorage
+} from "react-native";
 import { Input, Button, Icon } from "react-native-elements";
 import RadioForm, {
   RadioButton,
@@ -10,12 +16,19 @@ import RadioForm, {
 } from "react-native-simple-radio-button";
 import { connect } from "react-redux";
 import { theme } from "../../color-themes";
-import { calculateTaxAmount, calculateOrderAmount } from "../../utils";
+import {
+  calculateTaxAmount,
+  calculateOrderAmount,
+  retrieveAuthenticationToken
+} from "../../utils";
 import { getTaxes } from "../../actions/tax";
+import { SHOPMATE_CART_ID } from "../../constants";
+
 // This import applied to expo client environment only
 //it'll be switched to  import stripe from 'tipsi-stripe'  in production
 import { DangerZone } from "expo";
 const { Stripe } = DangerZone;
+import { placeCustomerOrder } from "../../actions/order";
 
 class Payment extends Component {
   state = {
@@ -24,12 +37,13 @@ class Payment extends Component {
     description: "",
     stripeToken: null,
     loadingToken: false,
-    errorToken: null
+    errorToken: null,
+    amount: 0
   };
 
   componentWillMount() {
     Stripe.setOptionsAsync({
-      publishableKey: "pk_test_3HWohRBC7VJxG1MTXCOZu8GS00VcOPYR3i",
+      publishableKey: "pk_test_NcwpaplBCuTL6I0THD44heRe",
       androidPayMode: "test"
     });
   }
@@ -37,14 +51,41 @@ class Payment extends Component {
     // Get taxes rates  from backend server
     this.props.getTaxes();
   }
+  placeOrderBackend = async () => {
+    const { stripeToken, description, taxId, taxPercentage } = this.state;
 
+    const { cart } = this.props;
+    // current customer cart id
+    const cartId = await AsyncStorage.getItem(SHOPMATE_CART_ID);
+    // total order amount
+    let amount = calculateOrderAmount(cart, taxPercentage);
+    amount = Number(amount) * 100;
+
+    // create order params object
+    const order = {
+      cart_id: cartId,
+      shipping_id: 1,
+      tax_id: taxId
+    };
+    // stripe payment params object
+    const stripe = {
+      stripeToken,
+      description,
+      amount,
+      currency: "USD"
+    };
+
+    authToken = await retrieveAuthenticationToken();
+    this.props.placeCustomerOrder(order, stripe, authToken);
+  };
   handleCardPayment = async () => {
     try {
       this.setState({ loadingToken: true, stripeToken: null });
-      const stripeToken = await Stripe.paymentRequestWithCardFormAsync();
+      const { tokenId } = await Stripe.paymentRequestWithCardFormAsync();
 
-      this.setState({ stripeToken });
-      console.log(stripeToken);
+      this.setState({ stripeToken: tokenId });
+      this.placeOrderBackend();
+      console.log(tokenId);
     } catch (error) {
       console.log(error);
       this.setState({ errorToken: error });
@@ -74,7 +115,6 @@ class Payment extends Component {
         <Text>Tax : ${calculateTaxAmount(cart, taxPercentage)}</Text>
         <Text> Subtotal : ${calculateOrderAmount(cart, 0)}</Text>
         <Text style={styles.totalTextStyle}>
-          {" "}
           Total : $ {calculateOrderAmount(cart, taxPercentage)}
         </Text>
       </View>
@@ -153,7 +193,8 @@ const mapStateToProps = state => {
   return {
     taxes: state.taxes.result,
     isTaxesFetching: state.taxes.isFetching,
-    cart: state.cart.result
+    cart: state.cart.result,
+    cartId: state.cartId.cartId
   };
 };
 const styles = StyleSheet.create({
@@ -185,5 +226,5 @@ const styles = StyleSheet.create({
 
 export default connect(
   mapStateToProps,
-  { getTaxes }
+  { getTaxes, placeCustomerOrder }
 )(Payment);

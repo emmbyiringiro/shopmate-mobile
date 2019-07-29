@@ -37,7 +37,7 @@ export const placeCustomerOrder = (
     );
 
     let orderId = createOrder.data.orderId;
-    console.log(orderId);
+    console.log(orderId, stripeToken);
     // process customer current order with stripe
     const stripePayment = await axios.post(
       `${API_URL}/stripe/charge`,
@@ -50,11 +50,7 @@ export const placeCustomerOrder = (
       },
       config
     );
-    // Request both requests sequencially
-    //const combinedRequest = await axios.all([createOrder, stripePayment]);
-
-    console.log(stripePayment.card.cardId);
-
+    console.log("Payment Result", stripePayment);
     dispatch({
       type: PLACE_ORDER_SUCCESS,
       placeOrderPending: false
