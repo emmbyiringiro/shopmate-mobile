@@ -31,6 +31,7 @@ import { SHOPMATE_CART_ID } from "../../constants";
 import { DangerZone } from "expo";
 const { Stripe } = DangerZone;
 import { placeCustomerOrder } from "../../actions/order";
+import ThankYou from "./ThankYou";
 
 class Payment extends Component {
   state = {
@@ -41,7 +42,7 @@ class Payment extends Component {
     loadingToken: false,
     errorToken: null,
     amount: 0,
-    shippingId: 1
+    shippingId: 2
   };
 
   componentWillMount() {
@@ -53,8 +54,11 @@ class Payment extends Component {
   async componentDidMount() {
     // Get taxes rates  from backend server
     await this.props.getTaxes();
-    //Get Shipping regions from backend server
-    await this.props.getShippingRegions();
+    //Get Shipping regions from backend server except
+    // when are already fetched
+    if (!this.props.shippingRegions.length) {
+      await this.props.getShippingRegions();
+    }
   }
   placeOrderBackend = async () => {
     const {
@@ -205,9 +209,15 @@ class Payment extends Component {
     );
   };
   render() {
-    const { navigation, customerPaid } = this.props;
+    const {
+      navigation,
+      customerPaid,
+      isshippingRegionsFetching,
+      paymentPending
+    } = this.props;
+
     if (customerPaid) {
-      navigation.navigate("ThankYou");
+      return <ThankYou />;
     }
 
     return (
@@ -228,13 +238,14 @@ class Payment extends Component {
         <View style={styles.placeOrderButtonContainer}>
           <Button
             onPress={() => this.handleCardPayment()}
-            type="solid"
+            type={paymentPending ? "clear" : "solid"}
             title="Place Order"
             titleStyle={{ fontSize: 15 }}
             buttonStyle={{
               backgroundColor: theme.black
             }}
-            disabled={this.props.isshippingRegionsFetching}
+            disabled={isshippingRegionsFetching}
+            loading={paymentPending}
           />
         </View>
       </View>
@@ -249,7 +260,8 @@ const mapStateToProps = state => {
     cartId: state.cartId.cartId,
     shippingRegions: state.shippingRegions.result,
     isshippingRegionsFetching: state.shippingRegions.isFetching,
-    customerPaid: state.order.result.paid
+    customerPaid: state.order.result.paid,
+    paymentPending: state.order.paymentPending
   };
 };
 const styles = StyleSheet.create({

@@ -24,8 +24,8 @@ export class CheckoutWrapper extends Component {
   };
 
   render() {
-    const { loggedIn } = this.props;
-    console.log(loggedIn);
+    const { loggedIn, customerPaid, paymentPending } = this.props;
+
     return (
       <View style={{ flex: 1 }}>
         <ProgressSteps
@@ -96,6 +96,10 @@ export class CheckoutWrapper extends Component {
 }
 
 const mapStateToProps = state => {
-  return { loggedIn: state.loggedIn };
+  return {
+    loggedIn: state.loggedIn,
+    customerPaid: state.order.result.paid,
+    paymentPending: state.order.paymentPending
+  };
 };
 export default connect(mapStateToProps)(CheckoutWrapper);

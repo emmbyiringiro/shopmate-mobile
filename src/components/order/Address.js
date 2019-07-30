@@ -95,7 +95,7 @@ class Address extends Component {
       console.log(error.message);
     }
   };
-  renderAddressInputs = ({ label, input, meta: { touched, error } }) => {
+  _renderAddressInputs = ({ label, input, meta: { touched, error } }) => {
     return (
       <Input
         {...input}
@@ -108,7 +108,7 @@ class Address extends Component {
     );
   };
 
-  renderShippingRegions = ({
+  _renderShippingRegions = ({
     input: { onChange, value, ...inputProps },
     children,
     ...pickerProps
@@ -126,7 +126,7 @@ class Address extends Component {
       </Picker>
     );
   };
-  renderAddressFormCompleted = () => {
+  _renderAddressFormCompleted = () => {
     return (
       <View style={styles.formCompletedStyle}>
         <Icon name="check-circle" size={45} color={theme.primary} />
@@ -134,7 +134,7 @@ class Address extends Component {
       </View>
     );
   };
-  renderAddressForm = () => {
+  _renderAddressForm = () => {
     const { handleSubmit, shippingRegions } = this.props;
     const {
       address_1,
@@ -152,7 +152,7 @@ class Address extends Component {
         <View style={styles.sectionStyleWhite}>
           <Field
             name="address_1"
-            component={this.renderAddressInputs}
+            component={this._renderAddressInputs}
             label={address_1}
             type="text"
             validate={[
@@ -161,7 +161,7 @@ class Address extends Component {
           />
           <Field
             name="address_2"
-            component={this.renderAddressInputs}
+            component={this._renderAddressInputs}
             label={address_2}
             type="text"
             validate={[
@@ -170,7 +170,7 @@ class Address extends Component {
           />
           <Field
             name="city"
-            component={this.renderAddressInputs}
+            component={this._renderAddressInputs}
             label={city}
             type="text"
             validate={[required({ msg: "Your Shipping City is required" })]}
@@ -178,14 +178,14 @@ class Address extends Component {
 
           <Field
             name="region"
-            component={this.renderAddressInputs}
+            component={this._renderAddressInputs}
             label={region}
             type="text"
             validate={[required({ msg: "Your Shipping Region is required" })]}
           />
           <Field
             name="postal_code"
-            component={this.renderAddressInputs}
+            component={this._renderAddressInputs}
             label={postal_code}
             type="number"
             validate={[
@@ -198,14 +198,14 @@ class Address extends Component {
           />
           <Field
             name="country"
-            component={this.renderAddressInputs}
+            component={this._renderAddressInputs}
             label={country}
             validate={[required({ msg: "Your shipping country is required" })]}
           />
 
           <Field
             name="shipping_region_id"
-            component={this.renderShippingRegions}
+            component={this._renderShippingRegions}
             label={country}
           >
             {shippingRegions.map(region => {
@@ -235,8 +235,8 @@ class Address extends Component {
   render() {
     const { addressSubmitted } = this.state;
     return addressSubmitted
-      ? this.renderAddressFormCompleted()
-      : this.renderAddressForm();
+      ? this._renderAddressFormCompleted()
+      : this._renderAddressForm();
   }
 }
 

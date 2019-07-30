@@ -9,19 +9,13 @@ import Store from "../screens/Store";
 import Cart from "../screens/Cart";
 import ProductDetails from "../screens/ProductDetails";
 import Checkout from "../screens/Checkout";
-import ThankYou from "../screens/ThankYou";
 import { DEVICE_WIDTH } from "../constants";
 import Account from "../screens/Account";
 
 const AppStackNavigator = createStackNavigator({
-  ThankYou: { screen: ThankYou },
   Store: { screen: Store },
-
   Checkout: { screen: Checkout },
-  ThankYou: { screen: ThankYou },
-
   ProductDetails: { screen: ProductDetails },
-
   Checkout: { screen: Checkout },
   Cart: { screen: Cart }
 });

@@ -20,8 +20,7 @@ export const placeCustomerOrder = (
   };
   dispatch({
     type: PLACE_ORDER_START,
-    paymentPending: true,
-    paymentError: false
+    paymentPending: true
   });
 
   try {

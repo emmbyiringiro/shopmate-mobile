@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, Dimensions } from "react-native";
 import { Icon } from "react-native-elements";
-import Header from "./../components/common/Header";
-import ProductList from "./../components/products/ProductList";
-import { theme } from "../color-themes";
+import Header from "../common/Header";
+import ProductList from "../products/ProductList";
+import { theme } from "../../color-themes";
 
 class ThankYou extends Component {
   static navigationOptions = {
