@@ -31,7 +31,6 @@ import { SHOPMATE_CART_ID } from "../../constants";
 import { DangerZone } from "expo";
 const { Stripe } = DangerZone;
 import { placeCustomerOrder } from "../../actions/order";
-import ThankYou from "./ThankYou";
 
 class Payment extends Component {
   state = {
@@ -215,10 +214,6 @@ class Payment extends Component {
       isshippingRegionsFetching,
       paymentPending
     } = this.props;
-
-    if (customerPaid) {
-      return <ThankYou />;
-    }
 
     return (
       <View style={styles.containerStyle}>

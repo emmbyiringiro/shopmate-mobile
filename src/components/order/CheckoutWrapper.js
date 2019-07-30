@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import Address from "./Address";
 import OrderReview from "./OrderReview";
 import Payment from "./Payment";
+import ThankYou from "./ThankYou";
 import { theme } from "./../../color-themes";
 import { DEVICE_HEIGHT } from "../../constants";
 import Authenticate from "./../authentication/Authenticate";
@@ -23,6 +24,16 @@ export class CheckoutWrapper extends Component {
     this.setState({ errors: false });
   };
 
+  finishButtonText = () => {
+    const { customerPaid, paymentPending } = this.props;
+
+    if (paymentPending) {
+      return "Payment Pending";
+    } else if (customerPaid) {
+      return "Continue Shopping";
+    }
+    return "";
+  };
   render() {
     const { loggedIn, customerPaid, paymentPending } = this.props;
 
@@ -79,14 +90,22 @@ export class CheckoutWrapper extends Component {
           </ProgressStep>
           <ProgressStep
             label="PAYMENT"
-            previousBtnText="Review"
-            finishBtnText="Pay Now"
+            previousBtnText={customerPaid ? "" : "Review "}
+            finishBtnText={this.finishButtonText()}
             scrollViewProps={this.defaultScrollViewProps}
             previousBtnTextStyle={{ color: theme.primary }}
+            previousBtnDisabled={paymentPending}
             nextBtnTextStyle={{ color: theme.primary }}
+            onSubmit={() => {
+              this.props.navigation.navigate("Store");
+            }}
           >
             <View>
-              <Payment {...this.props} />
+              {customerPaid ? (
+                <ThankYou {...this.props} />
+              ) : (
+                <Payment {...this.props} />
+              )}
             </View>
           </ProgressStep>
         </ProgressSteps>
