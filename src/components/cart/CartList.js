@@ -98,7 +98,8 @@ const mapStateToProps = state => {
   return {
     cartId: state.cartId.cartId,
     cart: state.cart.result,
-    isFetching: state.cart.isFetching
+    isFetching: state.cart.isFetching,
+    loggedIn: state.loggedIn
   };
 };
 

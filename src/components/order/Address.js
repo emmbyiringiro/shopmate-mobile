@@ -1,7 +1,14 @@
 /* @flow */
 
 import React, { Component } from "react";
-import { View, Text, StyleSheet, AsyncStorage, Picker } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  AsyncStorage,
+  Picker,
+  KeyboardAvoidingView
+} from "react-native";
 import { Button, Input, Icon } from "react-native-elements";
 import { required, email, numericality } from "redux-form-validators";
 import axios from "axios";
@@ -145,7 +152,11 @@ class Address extends Component {
       region
     } = this.state.initialAddress;
     return (
-      <View style={styles.containerStyle}>
+      <KeyboardAvoidingView
+        style={styles.containerStyle}
+        enabled
+        behavior="height"
+      >
         <View style={styles.headerStyle}>
           <Text style={styles.headerTextStyle}> Shipping Address : </Text>
         </View>
@@ -229,7 +240,7 @@ class Address extends Component {
             />
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     );
   };
   render() {

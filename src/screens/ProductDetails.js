@@ -6,7 +6,8 @@ import {
   ScrollView,
   AsyncStorage,
   ActivityIndicator,
-  ToastAndroid
+  ToastAndroid,
+  KeyboardAvoidingView
 } from "react-native";
 import { Image, Rating, Button, Icon } from "react-native-elements";
 import RadioButton from "../components/common/RadioButton";
@@ -22,6 +23,7 @@ import { theme } from "./../color-themes";
 import { addToCart } from "./../actions/cart/";
 import { getProductAttributes } from "../actions/attributes";
 import ReviewsList from "../components/reviews/ReviewsList";
+import AddReview from "../components/reviews/AddReview";
 import NumericInput from "react-native-numeric-input";
 
 import CartTotals from "./../components/cart/CartTotals";
@@ -279,25 +281,38 @@ class ProductDetails extends Component {
     const { product_id } = navigation.state.params;
 
     return (
-      <ScrollView style={styles.containerStyle}>
-        {this.renderProductImages()}
-        {this.renderProductAttributes()}
+      <KeyboardAvoidingView
+        style={styles.containerStyle}
+        enabled
+        behavior="height"
+      >
+        <ScrollView>
+          {this.renderProductImages()}
+          {this.renderProductAttributes()}
 
-        <View style={[styles.sectionStyle, { justifyContent: "space-around" }]}>
-          {this.renderSizeAttributes()}
-        </View>
-        <View style={[styles.sectionStyle, { justifyContent: "space-around" }]}>
-          {this.renderColorAttributes()}
-        </View>
-        {this.renderProductDescription()}
-        <View style={[styles.sectionStyle, { alignItems: "center" }]}>
-          {this.renderContinueShoppingButton()}
-          {this.renderTransactionButtons()}
-        </View>
-        <View style={styles.sectionStyleWhite}>
-          <ReviewsList productId={product_id} />
-        </View>
-      </ScrollView>
+          <View
+            style={[styles.sectionStyle, { justifyContent: "space-around" }]}
+          >
+            {this.renderSizeAttributes()}
+          </View>
+          <View
+            style={[styles.sectionStyle, { justifyContent: "space-around" }]}
+          >
+            {this.renderColorAttributes()}
+          </View>
+          {this.renderProductDescription()}
+          <View style={[styles.sectionStyle, { alignItems: "center" }]}>
+            {this.renderContinueShoppingButton()}
+            {this.renderTransactionButtons()}
+          </View>
+          <View style={styles.sectionStyleWhite}>
+            <ReviewsList productId={product_id} />
+          </View>
+          <View style={styles.sectionStyle}>
+            <AddReview productId={product_id} />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     );
   }
 }

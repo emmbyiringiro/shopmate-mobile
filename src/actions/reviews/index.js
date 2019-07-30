@@ -4,13 +4,13 @@ import {
   FETCH_PRODUCT_REVIEWS_FAILURE
 } from "./types";
 
+import { API_URL } from "./../../constants";
+
 // Fetch product reviews
 export const getProductReviews = id => async dispatch => {
   dispatch({ type: FETCH_PRODUCT_REVIEWS_START, isFetching: true });
   try {
-    const response = await fetch(
-      `https://backendapi.turing.com/products/${id}/reviews`
-    );
+    const response = await fetch(`${API_URL}/products/${id}/reviews`);
     const data = await response.json();
 
     dispatch({

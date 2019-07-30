@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FlatList, View, ActivityIndicator } from "react-native";
+import { Text, View, FlatList, ActivityIndicator } from "react-native";
 import { connect } from "react-redux";
 import { theme } from "../../color-themes";
 import ReviewNetworkError from "../NetworkErrors/ReviewNetworkError";
@@ -7,7 +7,8 @@ import Review from "./Review";
 
 class ReviewsList extends Component {
   renderReviews = () => {
-    if (this.props.isFetching) {
+    const { isFetching, fetchError, productReviews } = this.props;
+    if (isFetching) {
       return (
         <View
           style={{
@@ -20,7 +21,22 @@ class ReviewsList extends Component {
           <ActivityIndicator color={theme.primary} />
         </View>
       );
-    } else if (this.props.fetchError) {
+    } else if (!productReviews.length) {
+      return (
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 20
+          }}
+        >
+          <Text>
+            No reviews available . Be the first to review this product
+          </Text>
+        </View>
+      );
+    } else if (fetchError) {
       return (
         <View
           style={{
@@ -37,7 +53,7 @@ class ReviewsList extends Component {
       <View>
         <FlatList
           horizontal
-          data={this.props.productReviews}
+          data={productReviews}
           renderItem={item => <Review {...item} />}
           keyExtractor={item => item.created_on.toString()}
           style={{ paddingEnd: 10, paddingBottom: 10 }}
