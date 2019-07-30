@@ -15,22 +15,30 @@ class SignupForm extends Component {
   state = { isFormSubmitting: false, error: "" };
 
   onSubmit = async formValues => {
-    this.setState({ isFormSubmitting: true });
+    this.setState({ isFormSubmitting: true, error: "" });
     try {
-      const { data } = await axios.post(
+      const { data, status } = await axios.post(
         `${CUSTOMER_SIGNUP_ENDPOINT}`,
         formValues
       );
-      // store authentication token
-      const token = data.accessToken;
-      storeAuthenticationToken(token, () => {
-        this.props.authenticateUser(true);
-      });
-      this.props.console.log(data);
+
+      if (status === 200) {
+        // store authentication token
+        const token = data.accessToken;
+        storeAuthenticationToken(token, () => {
+          this.props.authenticateUser(true);
+        });
+        this.setState({ isFormSubmitting: false });
+      }
+    } catch ({ response }) {
       this.setState({ isFormSubmitting: false });
-    } catch (error) {
-      this.setState({ isFormSubmitting: false });
-      this.setState({ error: "Your email is arleady exist" });
+      if (response.status === 400) {
+        this.setState({ error: response.data.error.message });
+      }
+
+      if (response.status === 500) {
+        this.setState({ error: "Something went wrong" });
+      }
     }
   };
 

@@ -14,12 +14,13 @@ import { theme } from "../../color-themes";
 class LoginForm extends Component {
   state = { isSubmitting: false, isSubmitted: false, error: "" };
   onSubmit = async formValues => {
-    this.setState({ isSubmitting: true });
+    this.setState({ isSubmitting: true, error: "" });
     try {
-      const { data } = await axios.post(
+      const { data, status } = await axios.post(
         `${CUSTOMER_LOGIN_ENDPOINT}`,
         formValues
       );
+
       // store authentication token
       const token = data.accessToken;
       storeAuthenticationToken(token, () => {
@@ -28,10 +29,15 @@ class LoginForm extends Component {
 
       this.setState({ isSubmitted: true });
       this.setState({ isSubmitting: false });
-    } catch (error) {
+    } catch ({ response }) {
       this.setState({ isSubmitting: false });
-      console.log(error);
-      this.setState({ error: "Invalid username or password" });
+
+      if (response.status === 400) {
+        this.setState({ error: "Invalid username or password" });
+      }
+      if (response.status === 500) {
+        this.setState({ error: "Something went wrong" });
+      }
     }
   };
 
