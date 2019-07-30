@@ -8,7 +8,8 @@ import { DEVICE_WIDTH } from "./../../constants";
 
 class Header extends React.Component {
   render() {
-    const BadgedIcon = withBadge(this.props.cart.length)(Icon);
+    const { cart } = this.props;
+    const BadgedIcon = cart.length ? withBadge(cart.length)(Icon) : Icon;
 
     return (
       <View style={styles.containerStyle}>
