@@ -1,7 +1,11 @@
 import {
   USER_SEARCHING,
   // Authenticate User action type
-  AUTHENTICATE_USER
+  AUTHENTICATE_USER,
+  // Get customer information action types
+  GET_CUSTOMER_INFO_START,
+  GET_CUSTOMER_INFO_SUCCESS,
+  GET_CUSTOMER_INFO_FAILURE
 } from "../../actions/services/types";
 
 import {
@@ -51,6 +55,41 @@ export const loggedIn = (state = false, action) => {
   switch (action.type) {
     case AUTHENTICATE_USER:
       return action.status;
+    default:
+      return state;
+  }
+};
+
+const initialCustomerState = {
+  result: {},
+  fetchError: false,
+  isFetching: false,
+  errorMessage: ""
+};
+export const customer = (state = initialCustomerState, action) => {
+  switch (action.type) {
+    case GET_CUSTOMER_INFO_START:
+      return {
+        ...state,
+        isFetching: action.isFetching
+      };
+
+    case GET_CUSTOMER_INFO_SUCCESS:
+      return {
+        ...state,
+        result: action.result,
+        isFetching: action.isFetching,
+        fetchError: action.fetchError
+      };
+
+    case GET_CUSTOMER_INFO_FAILURE:
+      return {
+        ...state,
+        fetchError: action.fetchError,
+        isFetching: action.isFetching,
+        errorMessage: action.errorMessage
+      };
+
     default:
       return state;
   }

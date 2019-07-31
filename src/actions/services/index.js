@@ -1,5 +1,5 @@
 import {
-  // Get customer information types
+  // Get customer information
   GET_CUSTOMER_INFO_START,
   GET_CUSTOMER_INFO_SUCCESS,
   GET_CUSTOMER_INFO_FAILURE,
@@ -27,11 +27,16 @@ export const getCustomerInfo = authToken => async dispatch => {
     const { data, status } = await axios.get(`${API_URL}/customer`, config);
 
     if (status === 200) {
-      dispatch({ type: GET_CUSTOMER_INFO_SUCCESS, isFetching: false });
+      dispatch({
+        type: GET_CUSTOMER_INFO_SUCCESS,
+        isFetching: false,
+        result: data
+      });
     }
   } catch ({ response }) {
     dispatch({
       type: GET_CUSTOMER_INFO_FAILURE,
+      fetchError: true,
       errorMessage: response.error.message,
       isFetching: false
     });

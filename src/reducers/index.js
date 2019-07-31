@@ -11,7 +11,7 @@ import { productAttributes } from "./attributes";
 import { taxes } from "./tax";
 import { order } from "./order";
 
-import { fetchError, isFetching, isUserSearching } from "./services";
+import { fetchError, isFetching, isUserSearching, customer } from "./services";
 import { categories } from "./categories";
 
 export default combineReducers({
@@ -33,5 +33,6 @@ export default combineReducers({
   isUserSearching,
   taxes,
   shippingRegionId,
-  order
+  order,
+  customer
 });

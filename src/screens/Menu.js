@@ -2,7 +2,7 @@
 
 import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { ListItem } from "react-native-elements";
+import { ListItem, Icon } from "react-native-elements";
 import { connect } from "react-redux";
 import { getCustomerInfo } from "../actions/services";
 
@@ -33,17 +33,34 @@ class Menu extends Component {
   };
 
   render() {
-    return <View style={styles.container}>{this._renderMenuList()}</View>;
+    return (
+      <View style={styles.container}>
+        <View style={styles.headerSectionStyle}>
+          <Icon name="person-outline" size={50} />
+          <Text>{this.props.customerInfo.name}</Text>
+        </View>
+        {this._renderMenuList()}
+      </View>
+    );
   }
 }
 
+const mapStateToProps = state => {
+  return { customerInfo: state.customer.result };
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+  headerSectionStyle: {
+    margin: 20,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
   }
 });
 
 export default connect(
-  null,
+  mapStateToProps,
   { getCustomerInfo }
 )(Menu);
