@@ -155,7 +155,7 @@ class Address extends Component {
       <KeyboardAvoidingView
         style={styles.containerStyle}
         enabled
-        behavior="height"
+        behavior="padding"
       >
         <View style={styles.headerStyle}>
           <Text style={styles.headerTextStyle}> Shipping Address : </Text>
@@ -258,8 +258,7 @@ const styles = StyleSheet.create({
   containerStyle: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: theme.gray,
-    height: DEVICE_HEIGHT * 0.8
+    backgroundColor: theme.gray
   },
   sectionStyle: {
     flexDirection: "row",

@@ -237,7 +237,7 @@ class Payment extends Component {
             title="Place Order"
             titleStyle={{ fontSize: 15 }}
             buttonStyle={{
-              backgroundColor: theme.black
+              backgroundColor: paymentPending ? "transparent" : theme.black
             }}
             disabled={isshippingRegionsFetching}
             loading={paymentPending}

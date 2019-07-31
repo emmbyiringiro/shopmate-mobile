@@ -8,6 +8,7 @@ import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import { connect } from "react-redux";
 import { removesShippingAddress } from "../../utils";
+import { theme } from "../../color-themes";
 
 class Authenticate extends Component {
   state = { toggleSignUp: false };
@@ -18,7 +19,7 @@ class Authenticate extends Component {
   render() {
     const { toggleSignUp } = this.state;
     return (
-      <View>
+      <View style={styles.container}>
         {toggleSignUp ? <SignupForm /> : <LoginForm />}
         <View style={styles.sectionStyle}>
           {toggleSignUp ? (
@@ -30,6 +31,7 @@ class Authenticate extends Component {
             onPress={this.handleToggleSignUp}
             title={toggleSignUp ? "Sign In" : "Sign Up"}
             type="clear"
+            titleStyle={{ color: theme.primary }}
           />
         </View>
       </View>

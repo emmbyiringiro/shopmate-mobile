@@ -1,21 +1,20 @@
-/* @flow */
-
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ToastAndroid } from "react-native";
 import { Input, Rating, Button } from "react-native-elements";
 import { theme } from "../../color-themes";
+import { connect } from "react-redux";
 import axios from "axios";
 import { retrieveAuthenticationToken } from "../../utils";
 import { API_URL } from "../../constants";
+import { getProductReviews } from "./../../actions/reviews";
 
-export default class AddReview extends Component {
+class AddReview extends Component {
   state = { rating: 2, review: "", isSubmitting: false, errorMessage: null };
   ratingComplete = rating => {
     this.setState({ rating });
   };
 
   onSubmit = async () => {
-    this.setState({ isSubmitting: true });
     const { productId } = this.props;
     const { rating, review } = this.state;
     const product_id = productId;
@@ -25,14 +24,19 @@ export default class AddReview extends Component {
 
     if (token !== null) {
       const params = { product_id, review, rating };
+      this.setState({ isSubmitting: true, review: "" });
       await this.submitReview(
         params,
         token,
-        // callback when  add review succeed
+        // callback when  add review resolved
         () => {
           this.setState({ isSubmitting: false });
+          // Notify customer that review received
+          ToastAndroid.show(`Thanks for your feedback `, ToastAndroid.SHORT);
+          // Get fresh new reviews which new added review
+          this.props.getProductReviews(product_id);
         },
-        // callback when  add review failure
+        // callback when  add review rejected
         errorMessage => {
           this.setState({ isSubmitting: false, errorMessage });
         }
@@ -78,11 +82,12 @@ export default class AddReview extends Component {
         <Input
           label=" Add Review"
           labelStyle={{ fontSize: 15, color: theme.primary }}
-          placeholder="Cool shirt bro..."
+          placeholder="write your review..."
           inputStyle={{ fontSize: 14 }}
           multiline={true}
           numberOfLines={3}
           onChangeText={text => this.setState({ review: text })}
+          value={this.state.review}
         />
         <View>
           {errorMessage ? (
@@ -116,3 +121,7 @@ const styles = StyleSheet.create({
     flex: 1
   }
 });
+export default connect(
+  null,
+  { getProductReviews }
+)(AddReview);
