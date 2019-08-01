@@ -1,29 +1,37 @@
+/*
+ *  The component provide login capability to customer
+ *  valid with username and password
+ */
+
 import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { Button, Input, Icon } from "react-native-elements";
+
+import axios from "axios";
 import { required, email, length } from "redux-form-validators";
 import { Field, reduxForm } from "redux-form";
-import { Button, Input, Icon } from "react-native-elements";
-import axios from "axios";
-import { CUSTOMER_LOGIN_ENDPOINT } from "../../constants";
-import { storeAuthenticationToken } from "../../utils";
 import { connect } from "react-redux";
-import { authenticateUser } from "../../actions/services";
 
+import { API_URL } from "../../constants";
+import { storeAuthenticationToken } from "../../utils";
+import { authenticateUser } from "../../actions/services";
 import { theme } from "../../color-themes";
 
 class LoginForm extends Component {
   state = { isSubmitting: false, isSubmitted: false, error: "" };
+
   onSubmit = async formValues => {
     this.setState({ isSubmitting: true, error: "" });
     try {
       const { data, status } = await axios.post(
-        `${CUSTOMER_LOGIN_ENDPOINT}`,
+        `${API_URL}/customers/login`,
         formValues
       );
 
-      // store authentication token
-      const token = data.accessToken;
-      storeAuthenticationToken(token, () => {
+      const authToken = data.accessToken;
+      storeAuthenticationToken(authToken, () => {
+        // action creator which set "loggedIn =true"
+        // on application level
         this.props.authenticateUser(true);
       });
 
@@ -41,7 +49,7 @@ class LoginForm extends Component {
     }
   };
 
-  renderLoginInputs = ({ label, name, input, meta: { touched, error } }) => {
+  _renderLoginInputs = ({ label, name, input, meta: { touched, error } }) => {
     return (
       <Input
         {...input}
@@ -53,7 +61,7 @@ class LoginForm extends Component {
     );
   };
 
-  renderLoginForm = () => {
+  _renderLoginForm = () => {
     const { handleSubmit } = this.props;
     return (
       <View style={styles.containerStyle}>
@@ -63,10 +71,11 @@ class LoginForm extends Component {
             Login with Email and Password{" "}
           </Text>
         </View>
+
         <View style={styles.sectionStyleWhitBorder}>
           <Field
             name="email"
-            component={this.renderLoginInputs}
+            component={this._renderLoginInputs}
             label="Email"
             type="text"
             validate={[
@@ -77,7 +86,7 @@ class LoginForm extends Component {
 
           <Field
             name="password"
-            component={this.renderLoginInputs}
+            component={this._renderLoginInputs}
             label="Password"
             type="password"
             validate={[
@@ -89,6 +98,10 @@ class LoginForm extends Component {
 
         <View style={{ padding: 20 }}>
           <Button
+            containerStyle={{
+              justifyContent: "flex-end",
+              alignItems: "flex-end"
+            }}
             onPress={handleSubmit(this.onSubmit)}
             title="Login"
             buttonStyle={{ backgroundColor: theme.primary }}
@@ -108,7 +121,7 @@ class LoginForm extends Component {
   };
   render() {
     const { isSubmitted } = this.state;
-    return this.renderLoginForm();
+    return this._renderLoginForm();
   }
 }
 

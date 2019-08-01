@@ -1,4 +1,8 @@
-/* @flow */
+/*
+ *  The component provide edit customer profile  capability
+ *  and it update the following fields :
+ *(1) name (2) email (3) password and (4) phone number
+ */
 
 import React, { Component } from "react";
 import {
@@ -9,18 +13,17 @@ import {
   ToastAndroid
 } from "react-native";
 import { Button, Input, Icon } from "react-native-elements";
+import Authenticate from "../components/authentication/Authenticate";
+
 import { required, email, numericality, length } from "redux-form-validators";
 import axios from "axios";
 import { connect } from "react-redux";
+import { Field, reduxForm } from "redux-form";
+
+import { API_URL } from "../constants";
 import { theme } from "../color-themes";
 import { getCustomerInfo } from "../actions/services";
-
-import { SHOPMATE_CUSTOMER_ADDRESS, API_URL } from "../constants";
 import { retrieveAuthenticationToken } from "../utils";
-
-import Authenticate from "../components/authentication/Authenticate";
-
-import { Field, reduxForm } from "redux-form";
 
 class EditProfile extends Component {
   state = {
@@ -46,12 +49,13 @@ class EditProfile extends Component {
     this.setState({ isLoading: true });
 
     const authToken = await retrieveAuthenticationToken();
+
     if (authToken !== null) {
-      await this.updateProfile(authToken, formValues);
+      await this.updateCustomerProfile(authToken, formValues);
     }
   };
 
-  updateProfile = async (token, formValues) => {
+  updateCustomerProfile = async (token, formValues) => {
     let config = {
       headers: {
         Accept: "application/json",
@@ -68,20 +72,26 @@ class EditProfile extends Component {
       );
 
       this.setState({ isLoading: false });
+
       const authToken = await retrieveAuthenticationToken();
+
       authToken ? await this.props.getCustomerInfo(authToken) : null;
+
+      this.setState({ customerInfo: this.props.customerInfo });
+
       ToastAndroid.show(`Your Profile updated`, ToastAndroid.SHORT);
     } catch (error) {
       this.setState({ isLoading: false });
       console.log(error.response);
     }
   };
-  _renderAddressInputs = ({ label, input, meta: { touched, error } }) => {
+  _renderInputs = ({ label, input, meta: { touched, error } }) => {
     return (
       <Input
         {...input}
         placeholder={label}
         errorMessage={touched && error ? error : ""}
+        secureTextEntry={label === "Password" ? true : false}
         inputStyle={{
           fontSize: 14
         }}
@@ -89,7 +99,7 @@ class EditProfile extends Component {
     );
   };
 
-  _renderAddressForm = () => {
+  _renderForm = () => {
     const { handleSubmit } = this.props;
     const { name, mob_phone } = this.state.customerInfo;
     return (
@@ -99,22 +109,21 @@ class EditProfile extends Component {
         behavior="padding"
       >
         <View style={styles.headerStyle}>
-          <Text style={styles.headerTextStyle}>
-            {" "}
-            Your Account Information :{" "}
-          </Text>
+          <Text style={styles.headerTextStyle}>Your Account Information :</Text>
         </View>
+
         <View style={styles.sectionStyleWhite}>
           <Field
             name="name"
-            component={this._renderAddressInputs}
+            component={this._renderInputs}
             label={name || "Your name"}
             type="text"
             validate={[required({ msg: "Your name is required" })]}
           />
+
           <Field
             name="email"
-            component={this._renderAddressInputs}
+            component={this._renderInputs}
             label={this.state.customerInfo.email || "email"}
             type="text"
             validate={[
@@ -124,20 +133,21 @@ class EditProfile extends Component {
               })
             ]}
           />
+
           <Field
             name="password"
-            component={this._renderAddressInputs}
-            label={"Password"}
+            component={this._renderInputs}
+            label="Password"
             type="password"
             validate={[
-              required({ msg: "password required" }),
+              required({ msg: " Password required" }),
               length({ min: 8, msg: "Password must be over 8 characters" })
             ]}
           />
 
           <Field
             name="mob_phone"
-            component={this._renderAddressInputs}
+            component={this._renderInputs}
             label={mob_phone || "Mobile Phone"}
             type="text"
           />
@@ -161,7 +171,7 @@ class EditProfile extends Component {
   };
   render() {
     const { loggedIn } = this.props;
-    return loggedIn ? this._renderAddressForm() : <Authenticate />;
+    return loggedIn ? this._renderForm() : <Authenticate />;
   }
 }
 
