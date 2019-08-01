@@ -8,6 +8,9 @@ import AuthSuccess from "../components/authentication/AuthSuccess";
 import { authenticateUser } from "../actions/services";
 import { removeAuthenticationToken, removesShippingAddress } from "../utils";
 class Account extends Component {
+  static navigationOptions = {
+    title: `Account`
+  };
   signOut = () => {
     removeAuthenticationToken();
     removesShippingAddress(() => {

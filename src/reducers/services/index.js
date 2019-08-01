@@ -5,7 +5,8 @@ import {
   // Get customer information action types
   GET_CUSTOMER_INFO_START,
   GET_CUSTOMER_INFO_SUCCESS,
-  GET_CUSTOMER_INFO_FAILURE
+  GET_CUSTOMER_INFO_FAILURE,
+  AUTH_TOKEN_EXPIRED
 } from "../../actions/services/types";
 
 import {
@@ -64,7 +65,8 @@ const initialCustomerState = {
   result: {},
   fetchError: false,
   isFetching: false,
-  errorMessage: ""
+  errorMessage: "",
+  authTokenExpired: false
 };
 export const customer = (state = initialCustomerState, action) => {
   switch (action.type) {
@@ -89,7 +91,11 @@ export const customer = (state = initialCustomerState, action) => {
         isFetching: action.isFetching,
         errorMessage: action.errorMessage
       };
-
+    case AUTH_TOKEN_EXPIRED:
+      return {
+        ...state,
+        authTokenExpired: action.authTokenExpired
+      };
     default:
       return state;
   }

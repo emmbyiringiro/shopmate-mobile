@@ -2,24 +2,35 @@
 
 import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { ListItem, Icon } from "react-native-elements";
+import { ListItem, Icon, Button } from "react-native-elements";
 import { connect } from "react-redux";
-import { getCustomerInfo } from "../actions/services";
+import { getCustomerInfo, authenticateUser } from "../actions/services";
+import { theme } from "./../color-themes";
 
-import { retrieveAuthenticationToken } from "../utils";
+import {
+  retrieveAuthenticationToken,
+  removeAuthenticationToken
+} from "../utils";
 class Menu extends Component {
   async componentDidMount() {
     const authToken = await retrieveAuthenticationToken();
 
     if (authToken !== null) {
-      this.props.getCustomerInfo(authToken);
+      await this.props.getCustomerInfo(authToken);
+      await this.props.authenticateUser(true);
+    }
+  }
+
+  async componentDidUpdate() {
+    if (this.props.authTokenExpired) {
+      await this.props.authenticateUser(false);
+      await removeAuthenticationToken();
     }
   }
   _renderMenuList = () => {
     const list = [
-      { title: "Profile", icon: "person-outline" },
-      { title: "Shipping Address", icon: "local-shipping" },
-      { title: "Login/Logout", icon: "lock-outline" }
+      { title: "Profile", icon: "person-outline", link: "EditProfile" },
+      { title: "Account", icon: "lock-outline", link: "Account" }
     ];
 
     return list.map((item, i) => (
@@ -28,6 +39,9 @@ class Menu extends Component {
         title={item.title}
         leftIcon={{ name: item.icon }}
         type="fontawesome"
+        onPress={() => {
+          this.props.navigate(item.link);
+        }}
       />
     ));
   };
@@ -35,9 +49,19 @@ class Menu extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.headerSectionStyle}>
-          <Icon name="person-outline" size={50} />
-          <Text>{this.props.customerInfo.name}</Text>
+        <View
+          style={[styles.headerSectionStyle, { backgroundColor: theme.gray }]}
+        >
+          <Icon name="account-circle" size={60} />
+
+          <Text
+            style={{
+              fontSize: 17,
+              fontWeight: "bold"
+            }}
+          >
+            Hello! {this.props.customerInfo.name}
+          </Text>
         </View>
         {this._renderMenuList()}
       </View>
@@ -46,21 +70,25 @@ class Menu extends Component {
 }
 
 const mapStateToProps = state => {
-  return { customerInfo: state.customer.result };
+  return {
+    customerInfo: state.customer.result,
+    authTokenExpired: state.customer.authTokenExpired
+  };
 };
 const styles = StyleSheet.create({
   container: {
+    paddingTop: 20,
     flex: 1
   },
   headerSectionStyle: {
-    margin: 20,
+    padding: 20,
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-around",
     alignItems: "center"
   }
 });
 
 export default connect(
   mapStateToProps,
-  { getCustomerInfo }
+  { getCustomerInfo, authenticateUser }
 )(Menu);

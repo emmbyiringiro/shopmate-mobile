@@ -9,11 +9,10 @@ import Store from "../screens/Store";
 import Cart from "../screens/Cart";
 import ProductDetails from "../screens/ProductDetails";
 import Checkout from "../screens/Checkout";
-import { DEVICE_WIDTH } from "../constants";
-
 import Menu from "../screens/Menu";
 import EditProfile from "../screens/EditProfile";
-import EditShippingAddress from "../screens/EditShippingAddress";
+import Account from "../screens/Account";
+import { DEVICE_WIDTH } from "../constants";
 
 const AppStackNavigator = createStackNavigator({
   Store: { screen: Store },
@@ -22,13 +21,13 @@ const AppStackNavigator = createStackNavigator({
   Checkout: { screen: Checkout },
   Cart: { screen: Cart },
   EditProfile: { screen: EditProfile },
-  EditShippingAddress: { screen: EditShippingAddress }
+  Account: { screen: Account }
 });
 
 const drawerConfig = {
   drawerWidth: DEVICE_WIDTH * 0.83,
   contentComponent: ({ navigation }) => {
-    return <Menu />;
+    return <Menu {...navigation} />;
   }
 };
 const AppDrawerNavigator = createDrawerNavigator(

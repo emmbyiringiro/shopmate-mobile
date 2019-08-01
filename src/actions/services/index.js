@@ -3,6 +3,7 @@ import {
   GET_CUSTOMER_INFO_START,
   GET_CUSTOMER_INFO_SUCCESS,
   GET_CUSTOMER_INFO_FAILURE,
+  AUTH_TOKEN_EXPIRED,
   // user action types
   USER_SEARCHING,
   ADDRESS_FORM_SUBMIT,
@@ -33,11 +34,15 @@ export const getCustomerInfo = authToken => async dispatch => {
         result: data
       });
     }
-  } catch ({ response }) {
+  } catch (error) {
+    if (error.response.status === 500) {
+      console.log(error.response.status);
+      dispatch({ type: AUTH_TOKEN_EXPIRED, authTokenExpired: true });
+    }
     dispatch({
       type: GET_CUSTOMER_INFO_FAILURE,
       fetchError: true,
-      errorMessage: response.error.message,
+      errorMessage: error.response,
       isFetching: false
     });
   }
