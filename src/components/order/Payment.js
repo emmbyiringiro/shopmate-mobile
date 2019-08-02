@@ -255,8 +255,8 @@ const mapStateToProps = state => {
     cartId: state.cartId.cartId,
     shippingRegions: state.shippingRegions.result,
     isshippingRegionsFetching: state.shippingRegions.isFetching,
-    customerPaid: state.order.result.paid,
-    paymentPending: state.order.paymentPending
+    customerPaid: state.placeOrder.result.paid,
+    paymentPending: state.placeOrder.paymentPending
   };
 };
 const styles = StyleSheet.create({

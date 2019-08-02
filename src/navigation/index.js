@@ -12,6 +12,8 @@ import Checkout from "../screens/Checkout";
 import Menu from "../screens/Menu";
 import EditProfile from "../screens/EditProfile";
 import Account from "../screens/Account";
+import CustomerOrders from "../screens/CustomerOrders";
+
 import { DEVICE_WIDTH } from "../constants";
 
 const AppStackNavigator = createStackNavigator({
@@ -21,7 +23,8 @@ const AppStackNavigator = createStackNavigator({
   Checkout: { screen: Checkout },
   Cart: { screen: Cart },
   EditProfile: { screen: EditProfile },
-  Account: { screen: Account }
+  Account: { screen: Account },
+  CustomerOrders: { screen: CustomerOrders }
 });
 
 const drawerConfig = {

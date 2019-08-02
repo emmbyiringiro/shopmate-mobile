@@ -1,4 +1,6 @@
-/* @flow */
+/*  Component provide menu option customer for
+ *   customer account
+ */
 
 import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
@@ -16,6 +18,7 @@ class Menu extends Component {
     const authToken = await retrieveAuthenticationToken();
 
     if (authToken !== null) {
+      console.log(authToken);
       await this.props.getCustomerInfo(authToken);
       await this.props.authenticateUser(true);
     }
@@ -30,6 +33,7 @@ class Menu extends Component {
   _renderMenuList = () => {
     const list = [
       { title: "Profile", icon: "person-outline", link: "EditProfile" },
+      { title: "Orders", icon: "local-shipping", link: "CustomerOrders" },
       { title: "Account", icon: "lock-outline", link: "Account" }
     ];
 

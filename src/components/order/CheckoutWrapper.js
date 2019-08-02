@@ -117,8 +117,8 @@ export class CheckoutWrapper extends Component {
 const mapStateToProps = state => {
   return {
     loggedIn: state.loggedIn,
-    customerPaid: state.order.result.paid,
-    paymentPending: state.order.paymentPending
+    customerPaid: state.placeOrder.result.paid,
+    paymentPending: state.placeOrder.paymentPending
   };
 };
 export default connect(mapStateToProps)(CheckoutWrapper);

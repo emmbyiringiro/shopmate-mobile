@@ -1,8 +1,14 @@
 import {
+  // Place order types
   PLACE_ORDER_START,
   PLACE_ORDER_SUCCESS,
-  PLACE_ORDER_FAILURE
+  PLACE_ORDER_FAILURE,
+  // Get Customer Orders types
+  GET_CUSTOMER_ORDERS_START,
+  GET_CUSTOMER_ORDERS_SUCCESS,
+  GET_CUSTOMER_ORDERS_FAILURE
 } from "./types";
+import { AUTH_TOKEN_EXPIRED } from "../services/types";
 import axios from "axios";
 import { API_URL } from "../../constants";
 
@@ -56,15 +62,49 @@ export const placeCustomerOrder = (
         result: data
       });
     }
-
-    console.log(data);
   } catch (error) {
-    console.log(error.response);
     dispatch({
       type: PLACE_ORDER_FAILURE,
       paymentPending: false,
       paymentError: true,
       errorMessage: error.response
+    });
+  }
+};
+
+export const getCustomerOrders = authToken => async dispatch => {
+  let config = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "USER-KEY": `${authToken}`
+    }
+  };
+  dispatch({ type: GET_CUSTOMER_ORDERS_START, isFetching: true });
+
+  try {
+    const { data, status } = await axios.get(
+      `${API_URL}/orders/inCustomer`,
+      config
+    );
+
+    if (status === 200) {
+      console.log(data);
+      dispatch({
+        type: GET_CUSTOMER_ORDERS_SUCCESS,
+        isFetching: false,
+        result: data
+      });
+    }
+  } catch (error) {
+    if (error.response.status === 500) {
+      dispatch({ type: AUTH_TOKEN_EXPIRED, authTokenExpired: true });
+    }
+    dispatch({
+      type: GET_CUSTOMER_ORDERS_FAILURE,
+      fetchError: true,
+      errorMessage: error.response,
+      isFetching: false
     });
   }
 };
