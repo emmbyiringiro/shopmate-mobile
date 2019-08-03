@@ -1,7 +1,13 @@
 /* Component dispay loggedIn customer orders */
 
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator
+} from "react-native";
 import {
   Collapse,
   CollapseHeader,
@@ -11,7 +17,7 @@ import {
 
 import { connect } from "react-redux";
 
-import { getCustomerOrders } from "../actions/order";
+import { getCustomerOrders, getOrder } from "../actions/order";
 import {
   retrieveAuthenticationToken,
   removeAuthenticationToken
@@ -19,6 +25,11 @@ import {
 import { theme } from "../color-themes";
 
 class CustomerOrders extends Component {
+  state = { isCollapsed: false, activeOrder: null };
+
+  static navigationOptions = {
+    title: ` Orders`
+  };
   async componentDidMount() {
     const authToken = await retrieveAuthenticationToken();
 
@@ -26,47 +37,129 @@ class CustomerOrders extends Component {
       await this.props.getCustomerOrders(authToken);
     }
   }
-  _renderCustomerOrders = () => {
-    const { customerOrders } = this.props;
 
-    console.log(customerOrders);
+  handleToggle = async (isCollapsed, orderId) => {
+    this.setState({
+      isCollapsed: !this.state.isCollapsed,
+      activeOrder: orderId
+    });
+    const authToken = await retrieveAuthenticationToken();
+
+    if (authToken !== null && isCollapsed) {
+      await this.props.getOrder(authToken, orderId);
+    }
+  };
+
+  _renderHeaders = () => {
+    return (
+      <View style={styles.headerStyle}>
+        <View>
+          <Text style={styles.headerTextStyle}> Number</Text>
+        </View>
+        <View>
+          <Text style={styles.headerTextStyle}> Amount {"    "}</Text>
+        </View>
+
+        <View>
+          <Text style={styles.headerTextStyle}>
+            {" "}
+            Order Date {"                "}
+          </Text>
+        </View>
+      </View>
+    );
+  };
+  _renderOrderItems = () => {
+    const { currentOrder } = this.props;
 
     return (
       <View>
-        <View style={styles.headerStyle}>
-          <View>
-            <Text style={styles.headerTextStyle}> Number</Text>
-          </View>
-          <View>
-            <Text style={styles.headerTextStyle}> Amount {"    "}</Text>
-          </View>
+        <Text style={{ fontWeight: "bold" }}> Product(s) in this order :</Text>
+        {currentOrder.map(order => (
+          <OrderItems
+            {...order}
+            key={Math.random() + new Date().getMilliseconds()}
+          />
+        ))}
+      </View>
+    );
+  };
+  _renderCustomerOrders = () => {
+    const {
+      customerOrders,
+      currentOrder,
+      isFetchingProducts,
+      isFetchingOrders
+    } = this.props;
+    const { isCollapsed, activeOrder } = this.state;
 
-          <View>
-            <Text style={styles.headerTextStyle}>
-              {" "}
-              Order Date {"                "}
-            </Text>
-          </View>
+    if (isFetchingOrders) {
+      return (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <ActivityIndicator size="large" color={theme.primary} />
         </View>
+      );
+    }
 
+    if (!customerOrders.length && !isFetchingProducts) {
+      return (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <Text style={{ color: theme.secondary }}>
+            There's no information to show
+          </Text>
+        </View>
+      );
+    }
+
+    return (
+      <ScrollView>
         {customerOrders.map(order => (
-          <Collapse key={order.order_id} style={{ padding: 5 }}>
-            <CollapseHeader style={styles.headerStyle}>
+          <Collapse
+            isCollapsed={order.order_id === activeOrder}
+            key={order.order_id}
+            style={{ padding: 5 }}
+            onToggle={isCollapsed => {
+              this.handleToggle(isCollapsed, order.order_id);
+            }}
+          >
+            <CollapseHeader style={styles.headerCollapseStyle}>
               <View>
-                <Text style={styles.headerCollapseTextStyle}>
+                <Text
+                  style={
+                    isCollapsed && activeOrder === order.order_id
+                      ? styles.headerCollapseTextStyleActive
+                      : styles.headerCollapseTextStyle
+                  }
+                >
                   {" "}
                   #{order.order_id}
                 </Text>
               </View>
               <View>
-                <Text style={styles.headerCollapseTextStyle}>
+                <Text
+                  style={
+                    isCollapsed && activeOrder === order.order_id
+                      ? styles.headerCollapseTextStyleActive
+                      : styles.headerCollapseTextStyle
+                  }
+                >
                   {" "}
                   {order.total_amount} USD
                 </Text>
               </View>
 
               <View>
-                <Text style={styles.headerCollapseTextStyle}>
+                <Text
+                  style={
+                    isCollapsed && activeOrder === order.order_id
+                      ? styles.headerCollapseTextStyleActive
+                      : styles.headerCollapseTextStyle
+                  }
+                >
                   {" "}
                   {formatDate(order.created_on)}
                 </Text>
@@ -74,25 +167,66 @@ class CustomerOrders extends Component {
             </CollapseHeader>
             <CollapseBody style={styles.bodyCollapseContainerStyle}>
               <View>
-                <Text style={styles.bodyCollapseTextStyle}>
-                  Lorem Ipsum dol sit amen ......
-                </Text>
+                {isFetchingProducts ? (
+                  <View
+                    style={{ alignItems: "center", justifyContent: "center" }}
+                  >
+                    <ActivityIndicator color={theme.primary} size="small" />
+                  </View>
+                ) : (
+                  <View>{this._renderOrderItems()}</View>
+                )}
               </View>
             </CollapseBody>
           </Collapse>
         ))}
-      </View>
+      </ScrollView>
     );
   };
   render() {
-    return <View style={styles.container}>{this._renderCustomerOrders()}</View>;
+    return (
+      <View style={styles.container}>
+        {this._renderHeaders()}
+        {this._renderCustomerOrders()}
+      </View>
+    );
   }
 }
 
 const mapStateToProps = state => {
-  return { customerOrders: state.customerOrders.result };
+  return {
+    customerOrders: state.customerOrders.result,
+    currentOrder: state.order.result,
+    isFetchingProducts: state.order.isFetching,
+    isFetchingOrders: state.customerOrders.isFetching
+  };
 };
 
+const OrderItems = ({
+  product_name,
+  quantity,
+  unit_cost,
+  subtotal,
+  attributes
+}) => {
+  return (
+    <View style={styles.orderItemContainerStyle}>
+      <Text style={styles.orderItemTextStyle}>
+        {" "}
+        Product Name : {product_name}
+      </Text>
+      <Text style={styles.orderItemTextStyle}>
+        {" "}
+        Product Quantity : {quantity}
+      </Text>
+      <Text style={styles.orderItemTextStyle}> Unit Price : $ {unit_cost}</Text>
+      <Text style={styles.orderItemTextStyle}>
+        {" "}
+        SubTotal Price : $ {subtotal}
+      </Text>
+    </View>
+  );
+};
 const formatDate = date => {
   date = String(date);
   const section1 = date.substring(0, 10);
@@ -102,21 +236,47 @@ const formatDate = date => {
 };
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 20
+    flex: 1
   },
   headerStyle: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center"
+    alignItems: "center",
+    backgroundColor: theme.gray,
+    padding: 20
   },
-  headerTextStyle: { fontWeight: "bold", fontSize: 12 },
-  headerCollapseTextStyle: { color: "#333333", fontSize: 12 },
-  bodyCollapseContainerStyle: { padding: 20 },
-  bodyCollapseTextStyle: { color: "#999999", fontSize: 12 }
+
+  headerCollapseStyle: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 20
+  },
+  headerTextStyle: { fontWeight: "bold", fontSize: 13 },
+  headerCollapseTextStyle: { color: "#333333", fontSize: 13 },
+  headerCollapseTextStyleActive: {
+    color: "#333333",
+    fontSize: 13,
+    fontWeight: "600"
+  },
+  bodyCollapseContainerStyle: {
+    margin: 5,
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: theme.gray,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.gray
+  },
+  orderItemContainerStyle: {
+    margin: 5,
+    paddingBottom: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.secondary
+  },
+  orderItemTextStyle: { color: "#333333", fontSize: 12 }
 });
 
 export default connect(
   mapStateToProps,
-  { getCustomerOrders }
+  { getCustomerOrders, getOrder }
 )(CustomerOrders);

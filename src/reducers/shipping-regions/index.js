@@ -2,7 +2,10 @@ import {
   FETCH_REGIONS_START,
   FETCH_REGIONS_SUCCESS,
   FETCH_REGIONS_FAILURE,
-  UPDATE_SHIPPING_REGION
+  //
+  FETCH_SHIPPING_OPTIONS_START,
+  FETCH_SHIPPING_OPTIONS_SUCCESS,
+  FETCH_SHIPPING_OPTIONS_FAILURE
 } from "../../actions/shipping-regions/types";
 
 const initialShippingRegions = {
@@ -40,10 +43,35 @@ export const shippingRegions = (state = initialShippingRegions, action) => {
   }
 };
 
-export const shippingRegionId = (state = 1, action) => {
+const initialShippingOptions = {
+  result: [],
+  fetchError: false,
+  isFetching: false,
+  errorMessage: ""
+};
+export const shippingOptions = (state = initialShippingOptions, action) => {
   switch (action.type) {
-    case UPDATE_SHIPPING_REGION:
-      return action.value;
+    case FETCH_SHIPPING_OPTIONS_START:
+      return {
+        ...state,
+
+        isFetching: action.isFetching
+      };
+
+    case FETCH_SHIPPING_OPTIONS_SUCCESS:
+      return {
+        ...state,
+        result: action.result,
+        isFetching: action.isFetching,
+        fetchError: action.fetchError
+      };
+
+    case FETCH_SHIPPING_OPTIONS_FAILURE:
+      return {
+        ...state,
+        isFetching: action.isFetching,
+        fetchError: action.fetchError
+      };
 
     default:
       return state;

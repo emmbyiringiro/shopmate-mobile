@@ -6,7 +6,11 @@ import {
   // Get customer orders types
   GET_CUSTOMER_ORDERS_START,
   GET_CUSTOMER_ORDERS_SUCCESS,
-  GET_CUSTOMER_ORDERS_FAILURE
+  GET_CUSTOMER_ORDERS_FAILURE,
+  // Get order type
+  GET_ORDER_START,
+  GET_ORDER_SUCCESS,
+  GET_ORDER_FAILURE
 } from "../../actions/order/types";
 
 import { AUTH_TOKEN_EXPIRED } from "../../actions/services/types";
@@ -70,6 +74,46 @@ export const customerOrders = (state = initialCustomerOrderState, action) => {
       };
 
     case GET_CUSTOMER_ORDERS_FAILURE:
+      return {
+        ...state,
+        fetchError: action.fetchError,
+        isFetching: action.isFetching,
+        errorMessage: action.errorMessage
+      };
+    case AUTH_TOKEN_EXPIRED:
+      return {
+        ...state,
+        authTokenExpired: action.authTokenExpired
+      };
+    default:
+      return state;
+  }
+};
+
+const initialOrderState = {
+  result: [],
+  fetchError: false,
+  isFetching: false,
+  errorMessage: null,
+  authTokenExpired: false
+};
+export const order = (state = initialOrderState, action) => {
+  switch (action.type) {
+    case GET_ORDER_START:
+      return {
+        ...state,
+        isFetching: action.isFetching
+      };
+
+    case GET_ORDER_SUCCESS:
+      return {
+        ...state,
+        result: action.result,
+        isFetching: action.isFetching,
+        fetchError: action.fetchError
+      };
+
+    case GET_ORDER_FAILURE:
       return {
         ...state,
         fetchError: action.fetchError,

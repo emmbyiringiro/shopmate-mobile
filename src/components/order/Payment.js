@@ -23,7 +23,10 @@ import {
   retrieveAuthenticationToken
 } from "../../utils";
 import { getTaxes } from "../../actions/tax";
-import { getShippingRegions } from "../../actions/shipping-regions";
+import {
+  getShippingRegions,
+  getShippingOptions
+} from "../../actions/shipping-regions";
 import { SHOPMATE_CART_ID } from "../../constants";
 
 // This import applied to expo client environment only
@@ -41,7 +44,9 @@ class Payment extends Component {
     loadingToken: false,
     errorToken: null,
     amount: 0,
-    shippingId: 2
+    regionId: 2,
+    shippingId: 2,
+    shippingCost: 20
   };
 
   componentWillMount() {
@@ -53,6 +58,8 @@ class Payment extends Component {
   async componentDidMount() {
     // Get taxes rates  from backend server
     await this.props.getTaxes();
+    // get shipping options from Backend
+    await this.props.getShippingOptions(2);
     //Get Shipping regions from backend server except
     // when are already fetched
     if (!this.props.shippingRegions.length) {
@@ -101,7 +108,6 @@ class Payment extends Component {
 
       this.setState({ stripeToken: tokenId });
       this.placeOrderBackend();
-      console.log(tokenId);
     } catch (error) {
       console.log(error);
       this.setState({ errorToken: error });
@@ -120,9 +126,10 @@ class Payment extends Component {
     }
     return (
       <Picker
-        selectedValue={this.state.shippingId}
+        selectedValue={this.state.regionId}
         onValueChange={value => {
-          this.setState({ shippingId: value });
+          this.setState({ regionId: value });
+          this.props.getShippingOptions(value);
         }}
       >
         {shippingRegions.map(region => {
@@ -131,6 +138,45 @@ class Payment extends Component {
               key={region.shipping_region_id}
               label={region.shipping_region}
               value={region.shipping_region_id}
+            />
+          );
+        })}
+      </Picker>
+    );
+  };
+
+  _renderShippingOptions = () => {
+    const { shippingOptions, isShippingOptionsFetching } = this.props;
+
+    if (isShippingOptionsFetching) {
+      return (
+        <View>
+          <ActivityIndicator color={theme.primary} size="small" />
+        </View>
+      );
+    }
+    return (
+      <Picker
+        selectedValue={this.state.shippingId}
+        onValueChange={value => {
+          this.setState({
+            shippingId: value
+          });
+
+          this.setState({
+            shippingCost: shippingOptions.find(
+              shipping => shipping.shipping_id === this.state.shippingId
+            )
+          });
+          console.log(this.state.shippingId, this.state.shippingCost);
+        }}
+      >
+        {shippingOptions.map(option => {
+          return (
+            <Picker.Item
+              key={option.shipping_id}
+              label={option.shipping_type}
+              value={option.shipping_id}
             />
           );
         })}
@@ -226,9 +272,16 @@ class Payment extends Component {
         </View>
         {this._renderOrderDescription()}
         <View style={styles.headerStyle}>
-          <Text style={styles.headerTextStyle}> Shipping Region :</Text>
+          <Text style={{ fontWeight: "bold" }}> Ship my products to :</Text>
         </View>
         {this._renderShippingRegions()}
+        <View style={styles.headerStyle}>
+          <Text style={{ fontWeight: "bold" }}>
+            {" "}
+            Products will be shipped via :
+          </Text>
+        </View>
+        {this._renderShippingOptions()}
 
         <View style={styles.placeOrderButtonContainer}>
           <Button
@@ -255,6 +308,8 @@ const mapStateToProps = state => {
     cartId: state.cartId.cartId,
     shippingRegions: state.shippingRegions.result,
     isshippingRegionsFetching: state.shippingRegions.isFetching,
+    shippingOptions: state.shippingOptions.result,
+    isShippingOptionsFetching: state.shippingOptions.isFetching,
     customerPaid: state.placeOrder.result.paid,
     paymentPending: state.placeOrder.paymentPending
   };
@@ -288,5 +343,5 @@ const styles = StyleSheet.create({
 
 export default connect(
   mapStateToProps,
-  { getTaxes, getShippingRegions, placeCustomerOrder }
+  { getTaxes, getShippingRegions, placeCustomerOrder, getShippingOptions }
 )(Payment);

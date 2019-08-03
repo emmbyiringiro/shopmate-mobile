@@ -4,12 +4,12 @@ import { departments } from "./../reducers/departments";
 import { cartId, addToCart, removeToCart, updateProductInCart } from "./cart";
 import { reducer as formReducer } from "redux-form";
 import { loggedIn } from "./services";
-import { shippingRegions, shippingRegionId } from "./shipping-regions";
+import { shippingRegions, shippingOptions } from "./shipping-regions";
 import { cart } from "./cart";
 import { reviews } from "./reviews";
 import { productAttributes } from "./attributes";
 import { taxes } from "./tax";
-import { placeOrder, customerOrders } from "./order";
+import { placeOrder, customerOrders, order } from "./order";
 
 import { fetchError, isFetching, isUserSearching, customer } from "./services";
 import { categories } from "./categories";
@@ -26,13 +26,14 @@ export default combineReducers({
   categories,
   productAttributes,
   shippingRegions,
+  shippingOptions,
   form: formReducer,
   loggedIn,
   fetchError,
   isFetching,
   isUserSearching,
   taxes,
-  shippingRegionId,
+  order,
   placeOrder,
   customerOrders,
   customer

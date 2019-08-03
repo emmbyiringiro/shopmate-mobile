@@ -6,7 +6,11 @@ import {
   // Get Customer Orders types
   GET_CUSTOMER_ORDERS_START,
   GET_CUSTOMER_ORDERS_SUCCESS,
-  GET_CUSTOMER_ORDERS_FAILURE
+  GET_CUSTOMER_ORDERS_FAILURE,
+  // Get single order
+  GET_ORDER_START,
+  GET_ORDER_SUCCESS,
+  GET_ORDER_FAILURE
 } from "./types";
 import { AUTH_TOKEN_EXPIRED } from "../services/types";
 import axios from "axios";
@@ -102,6 +106,42 @@ export const getCustomerOrders = authToken => async dispatch => {
     }
     dispatch({
       type: GET_CUSTOMER_ORDERS_FAILURE,
+      fetchError: true,
+      errorMessage: error.response,
+      isFetching: false
+    });
+  }
+};
+
+export const getOrder = (authToken, orderId) => async dispatch => {
+  let config = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "USER-KEY": `${authToken}`
+    }
+  };
+  dispatch({ type: GET_ORDER_START, isFetching: true });
+
+  try {
+    const { data, status } = await axios.get(
+      `${API_URL}/orders/${orderId}`,
+      config
+    );
+
+    if (status === 200) {
+      dispatch({
+        type: GET_ORDER_SUCCESS,
+        isFetching: false,
+        result: data
+      });
+    }
+  } catch (error) {
+    if (error.response.status === 500) {
+      dispatch({ type: AUTH_TOKEN_EXPIRED, authTokenExpired: true });
+    }
+    dispatch({
+      type: GET_ORDER_FAILURE,
       fetchError: true,
       errorMessage: error.response,
       isFetching: false
