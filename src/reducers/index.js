@@ -11,7 +11,7 @@ import { productAttributes } from "./attributes";
 import { taxes } from "./tax";
 import { placeOrder, customerOrders, order } from "./order";
 
-import { fetchError, isFetching, isUserSearching, customer } from "./services";
+import { isUserSearching, customer } from "./services";
 import { categories } from "./categories";
 
 export default combineReducers({
@@ -29,8 +29,6 @@ export default combineReducers({
   shippingOptions,
   form: formReducer,
   loggedIn,
-  fetchError,
-  isFetching,
   isUserSearching,
   taxes,
   order,

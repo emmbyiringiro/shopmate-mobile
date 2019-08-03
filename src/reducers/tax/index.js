@@ -8,7 +8,7 @@ const initialTaxState = {
   result: [],
   fetchError: false,
   isFetching: false,
-  errorMessage: ""
+  error: null
 };
 export const taxes = (state = initialTaxState, action) => {
   switch (action.type) {
@@ -31,7 +31,8 @@ export const taxes = (state = initialTaxState, action) => {
       return {
         ...state,
         isFetching: action.isFetching,
-        fetchError: action.fetchError
+        fetchError: action.fetchError,
+        error: action.error
       };
 
     default:

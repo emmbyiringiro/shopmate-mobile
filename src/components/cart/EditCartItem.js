@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, ToastAndroid } from "react-native";
+import PropTypes from "prop-types";
 import { Button, Overlay } from "react-native-elements";
 import { connect } from "react-redux";
 import { theme } from "./../../color-themes";
@@ -10,6 +11,11 @@ import { updateProductInCart } from "../../actions/cart";
 
 class EditCartItem extends Component {
   state = { productUnits: 1 };
+  static propTypes = {
+    modalOpen: PropTypes.bool,
+    toggleModal: PropTypes.func
+  };
+  static defaultProps = { modalOpen: false };
 
   closeModal = () => this.setState({ isVisible: false });
 

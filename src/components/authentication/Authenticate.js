@@ -1,4 +1,4 @@
-/* @flow */
+/* Component act as container for <LoginForm> and <SignupForm> */
 
 import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
@@ -48,11 +48,11 @@ const styles = StyleSheet.create({
   },
   sectionStyle: {
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingLeft: 10,
     paddingRight: 10,
-    paddingBottom: 10,
-    alignItems: "center",
-    justifyContent: "center"
+    paddingBottom: 10
   }
 });
 

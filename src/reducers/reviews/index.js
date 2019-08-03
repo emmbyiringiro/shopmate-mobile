@@ -4,17 +4,14 @@ import {
   FETCH_PRODUCT_REVIEWS_FAILURE
 } from "../../actions/reviews/types";
 
-const initialStates = {
+const initialReviewState = {
   items: [],
   fetchError: false,
   isFetching: false,
-  errorMessage: ""
+  error: null
 };
-export const reviews = (state = initialStates, action) => {
+export const reviews = (state = initialReviewState, action) => {
   switch (action.type) {
-    /* ----------------------- */
-    /* Fetch reviews actions */
-    /* ---------------------- */
     case FETCH_PRODUCT_REVIEWS_START:
       return {
         ...state,
@@ -34,7 +31,7 @@ export const reviews = (state = initialStates, action) => {
         ...state,
         fetchError: action.fetchError,
         isFetching: action.isFetching,
-        errorMessage: action.errorMessage
+        error: action.error
       };
 
     default:

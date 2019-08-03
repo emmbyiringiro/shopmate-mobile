@@ -24,8 +24,7 @@ export const getDepartments = () => async dispatch => {
       type: FETCH_DEPARTMENTS_FAILURE,
       fetchError: true,
       isFetching: false,
-      errorMessage: error.message
+      error: error.response
     });
-    console.log(error);
   }
 };

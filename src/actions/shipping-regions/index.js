@@ -23,12 +23,12 @@ export const getShippingRegions = () => async dispatch => {
       isFetching: false,
       fetchError: false
     });
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
     dispatch({
       type: FETCH_REGIONS_FAILURE,
       fetchError: true,
-      isFetching: false
+      isFetching: false,
+      error: error.response
     });
   }
 };

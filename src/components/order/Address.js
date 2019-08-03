@@ -7,7 +7,8 @@ import {
   StyleSheet,
   AsyncStorage,
   Picker,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  ActivityIndicator
 } from "react-native";
 import { Button, Input, Icon } from "react-native-elements";
 import { required, email, numericality } from "redux-form-validators";
@@ -120,6 +121,15 @@ class Address extends Component {
     children,
     ...pickerProps
   }) => {
+    const { shippingRegions } = this.props;
+
+    if (!shippingRegions.length) {
+      return (
+        <View style={{ alignItems: "center", justifyContent: "center" }}>
+          <ActivityIndicator color={theme.primary} size="small" />
+        </View>
+      );
+    }
     return (
       <Picker
         selectedValue={value}
@@ -137,7 +147,10 @@ class Address extends Component {
     return (
       <View style={styles.formCompletedStyle}>
         <Icon name="check-circle" size={45} color={theme.primary} />
-        <Text> Shipping Address Received. Press Continue Button </Text>
+        <Text style={{ fontWeight: "500" }}>
+          {" "}
+          Address Received. Press Continue Button{" "}
+        </Text>
       </View>
     );
   };

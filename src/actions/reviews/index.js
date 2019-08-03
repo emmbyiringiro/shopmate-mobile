@@ -20,12 +20,11 @@ export const getProductReviews = id => async dispatch => {
       fetchError: false
     });
   } catch (error) {
-    console.log(error);
     dispatch({
       type: FETCH_PRODUCT_REVIEWS_FAILURE,
       fetchError: true,
       isFetching: false,
-      errorMessage: error.message
+      error: error.response
     });
   }
 };

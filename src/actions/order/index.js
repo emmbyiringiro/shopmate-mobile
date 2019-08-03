@@ -16,6 +16,7 @@ import { AUTH_TOKEN_EXPIRED } from "../services/types";
 import axios from "axios";
 import { API_URL } from "../../constants";
 
+//  Handle Order Payment
 export const placeCustomerOrder = (
   { cart_id, shipping_id, tax_id },
   { stripeToken, order_id, description, amount, currency },
@@ -71,7 +72,7 @@ export const placeCustomerOrder = (
       type: PLACE_ORDER_FAILURE,
       paymentPending: false,
       paymentError: true,
-      errorMessage: error.response
+      error: error.response
     });
   }
 };
@@ -93,7 +94,6 @@ export const getCustomerOrders = authToken => async dispatch => {
     );
 
     if (status === 200) {
-      console.log(data);
       dispatch({
         type: GET_CUSTOMER_ORDERS_SUCCESS,
         isFetching: false,
@@ -107,13 +107,13 @@ export const getCustomerOrders = authToken => async dispatch => {
     dispatch({
       type: GET_CUSTOMER_ORDERS_FAILURE,
       fetchError: true,
-      errorMessage: error.response,
+      error: error.response,
       isFetching: false
     });
   }
 };
-
-export const getOrder = (authToken, orderId) => async dispatch => {
+// -- Get products in order
+export const getOrderProducts = (authToken, orderId) => async dispatch => {
   let config = {
     headers: {
       Accept: "application/json",
@@ -143,7 +143,7 @@ export const getOrder = (authToken, orderId) => async dispatch => {
     dispatch({
       type: GET_ORDER_FAILURE,
       fetchError: true,
-      errorMessage: error.response,
+      error: error.response,
       isFetching: false
     });
   }

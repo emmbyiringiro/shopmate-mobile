@@ -15,11 +15,12 @@ import {
 
 import { AUTH_TOKEN_EXPIRED } from "../../actions/services/types";
 
+//---- Handle Payment reducer -----
 const initialPlaceOrderState = {
   result: [],
   paymentError: false,
   paymentPending: false,
-  errorMessage: ""
+  error: null
 };
 export const placeOrder = (state = initialPlaceOrderState, action) => {
   switch (action.type) {
@@ -42,7 +43,8 @@ export const placeOrder = (state = initialPlaceOrderState, action) => {
       return {
         ...state,
         paymentPending: action.paymentPending,
-        paymentError: action.paymentError
+        paymentError: action.paymentError,
+        error: action.error
       };
 
     default:
@@ -50,11 +52,12 @@ export const placeOrder = (state = initialPlaceOrderState, action) => {
   }
 };
 
+// --- Get active customer order reducer ---
 const initialCustomerOrderState = {
   result: [],
   fetchError: false,
   isFetching: false,
-  errorMessage: null,
+  error: null,
   authTokenExpired: false
 };
 export const customerOrders = (state = initialCustomerOrderState, action) => {
@@ -78,7 +81,7 @@ export const customerOrders = (state = initialCustomerOrderState, action) => {
         ...state,
         fetchError: action.fetchError,
         isFetching: action.isFetching,
-        errorMessage: action.errorMessage
+        error: action.error
       };
     case AUTH_TOKEN_EXPIRED:
       return {
@@ -89,15 +92,15 @@ export const customerOrders = (state = initialCustomerOrderState, action) => {
       return state;
   }
 };
-
-const initialOrderState = {
+// --- Get product in order reducer ----
+const initialOrderProductsState = {
   result: [],
   fetchError: false,
   isFetching: false,
-  errorMessage: null,
+  error: null,
   authTokenExpired: false
 };
-export const order = (state = initialOrderState, action) => {
+export const order = (state = initialOrderProductsState, action) => {
   switch (action.type) {
     case GET_ORDER_START:
       return {
@@ -118,7 +121,7 @@ export const order = (state = initialOrderState, action) => {
         ...state,
         fetchError: action.fetchError,
         isFetching: action.isFetching,
-        errorMessage: action.errorMessage
+        error: action.error
       };
     case AUTH_TOKEN_EXPIRED:
       return {

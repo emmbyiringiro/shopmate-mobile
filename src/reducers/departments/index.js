@@ -4,17 +4,14 @@ import {
   FETCH_DEPARTMENTS_FAILURE
 } from "./../../actions/departments/types";
 
-const initialStates = {
+const intitalDepartmentState = {
   items: [],
   fetchError: false,
   isFetching: false,
-  errorMessage: ""
+  error: null
 };
-export const departments = (state = initialStates, action) => {
+export const departments = (state = intitalDepartmentState, action) => {
   switch (action.type) {
-    /* -------------------------- */
-    /*  fetch department actions */
-    /* ------------------------- */
     case FETCH_DEPARTMENTS_START:
       return {
         ...state,
@@ -34,7 +31,7 @@ export const departments = (state = initialStates, action) => {
         ...state,
         fetchError: action.fetchError,
         isFetching: action.isFetching,
-        errorMessage: action.errorMessage
+        error: action.error
       };
     default:
       return state;

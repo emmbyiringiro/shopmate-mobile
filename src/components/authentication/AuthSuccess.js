@@ -10,9 +10,9 @@ class AuthSuccess extends Component {
     return (
       <View style={styles.container}>
         <Icon name="check-circle" size={45} color={theme.primary} />
-        <Text style={{ fontWeight: "700" }}>
+        <Text style={{ fontWeight: "500" }}>
           {" "}
-          You arleady successfully logged in.{" "}
+          You're logged in. Happy shopping... !
         </Text>
       </View>
     );

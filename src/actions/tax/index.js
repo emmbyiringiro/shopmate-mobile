@@ -13,14 +13,12 @@ export const getTaxes = () => async dispatch => {
       isFetching: false,
       fetchError: false
     });
-
-    console.log(data);
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
     dispatch({
       type: GET_TAX_FAILURE,
       fetchError: true,
-      isFetching: false
+      isFetching: false,
+      error: error.response
     });
   }
 };

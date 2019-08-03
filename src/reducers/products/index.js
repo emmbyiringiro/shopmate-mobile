@@ -10,17 +10,14 @@ import {
   SEARCH_PRODUCTS_FAILURE
 } from "../../actions/products/types";
 
-const initialStates = {
+const initialProductsState = {
   items: [],
   fetchError: false,
   isFetching: false,
-  errorMessage: ""
+  error: null
 };
-export const products = (state = initialStates, action) => {
+export const products = (state = initialProductsState, action) => {
   switch (action.type) {
-    /* ----------------------- */
-    /* Fetch products actions */
-    /* ---------------------- */
     case FETCH_PRODUCTS_START:
       return {
         ...state,
@@ -40,12 +37,8 @@ export const products = (state = initialStates, action) => {
         ...state,
         fetchError: action.fetchError,
         isFetching: action.isFetching,
-        errorMessage: action.errorMessage
+        error: action.error
       };
-
-    /* ------------------------ */
-    /* Search products actions */
-    /* -----------------------*/
 
     case SEARCH_PRODUCTS_START:
       return {
@@ -66,7 +59,7 @@ export const products = (state = initialStates, action) => {
         ...state,
         fetchError: action.fetchError,
         isFetching: action.isFetching,
-        errorMessage: action.errorMessage
+        error: action.error
       };
 
     default:

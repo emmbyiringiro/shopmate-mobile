@@ -17,7 +17,7 @@ import {
 
 import { connect } from "react-redux";
 
-import { getCustomerOrders, getOrder } from "../actions/order";
+import { getCustomerOrders, getOrderProducts } from "../actions/order";
 import {
   retrieveAuthenticationToken,
   removeAuthenticationToken
@@ -46,7 +46,7 @@ class CustomerOrders extends Component {
     const authToken = await retrieveAuthenticationToken();
 
     if (authToken !== null && isCollapsed) {
-      await this.props.getOrder(authToken, orderId);
+      await this.props.getOrderProducts(authToken, orderId);
     }
   };
 
@@ -278,5 +278,5 @@ const styles = StyleSheet.create({
 
 export default connect(
   mapStateToProps,
-  { getCustomerOrders, getOrder }
+  { getCustomerOrders, getOrderProducts }
 )(CustomerOrders);

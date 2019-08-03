@@ -4,17 +4,14 @@ import {
   FETCH_CATEGORIES_FAILURE
 } from "./../../actions/categories/types";
 
-const initialStates = {
+const initialCategoriesState = {
   items: [],
   fetchError: false,
   isFetching: false,
-  errorMessage: ""
+  error: null
 };
-export const categories = (state = initialStates, action) => {
+export const categories = (state = initialCategoriesState, action) => {
   switch (action.type) {
-    /* -------------------------- */
-    /*  fetch categories actions */
-    /* ------------------------- */
     case FETCH_CATEGORIES_START:
       return {
         ...state,
@@ -34,7 +31,7 @@ export const categories = (state = initialStates, action) => {
         ...state,
         fetchError: action.fetchError,
         isFetching: action.isFetching,
-        errorMessage: action.errorMessage
+        error: action.error
       };
     default:
       return state;

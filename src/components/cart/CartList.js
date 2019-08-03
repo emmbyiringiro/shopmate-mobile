@@ -6,6 +6,7 @@ import {
   AsyncStorage,
   ActivityIndicator
 } from "react-native";
+import PropType from "prop-types";
 import { connect } from "react-redux";
 import { Button, Icon } from "react-native-elements";
 import CartItem from "./CartItem";
@@ -94,6 +95,7 @@ class CartList extends Component {
   }
 }
 
+CartList.propTypes = { displayedInReview: PropType.bool };
 const mapStateToProps = state => {
   return {
     cartId: state.cartId.cartId,

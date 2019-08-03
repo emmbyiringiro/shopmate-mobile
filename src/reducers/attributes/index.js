@@ -8,13 +8,10 @@ const initialStates = {
   items: [],
   fetchError: false,
   isFetching: false,
-  errorMessage: ""
+  error: null
 };
 export const productAttributes = (state = initialStates, action) => {
   switch (action.type) {
-    /* -------------------------- */
-    /*  fetch product attributes actions */
-    /* ------------------------- */
     case FETCH_PRODUCT_ATTRIBUTES_START:
       return {
         ...state,
@@ -34,7 +31,7 @@ export const productAttributes = (state = initialStates, action) => {
         ...state,
         fetchError: action.fetchError,
         isFetching: action.isFetching,
-        errorMessage: action.errorMessage
+        error: action.error
       };
     default:
       return state;

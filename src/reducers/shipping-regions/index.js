@@ -12,7 +12,7 @@ const initialShippingRegions = {
   result: [],
   fetchError: false,
   isFetching: false,
-  errorMessage: ""
+  error: null
 };
 export const shippingRegions = (state = initialShippingRegions, action) => {
   switch (action.type) {
@@ -35,7 +35,8 @@ export const shippingRegions = (state = initialShippingRegions, action) => {
       return {
         ...state,
         isFetching: action.isFetching,
-        fetchError: action.fetchError
+        fetchError: action.fetchError,
+        error: action.error
       };
 
     default:
@@ -43,11 +44,12 @@ export const shippingRegions = (state = initialShippingRegions, action) => {
   }
 };
 
+// Get shipping options reducer
 const initialShippingOptions = {
   result: [],
   fetchError: false,
   isFetching: false,
-  errorMessage: ""
+  error: null
 };
 export const shippingOptions = (state = initialShippingOptions, action) => {
   switch (action.type) {
@@ -70,7 +72,8 @@ export const shippingOptions = (state = initialShippingOptions, action) => {
       return {
         ...state,
         isFetching: action.isFetching,
-        fetchError: action.fetchError
+        fetchError: action.fetchError,
+        error: action.error
       };
 
     default:

@@ -5,6 +5,7 @@ import {
 } from "./types";
 import { API_URL } from "./../../constants";
 
+// Get all categories in seleceted department
 export const getCategories = departmentId => async dispatch => {
   const ENDPOINT_URL = `${API_URL}/categories/inDepartment/${departmentId}`;
 
@@ -20,12 +21,11 @@ export const getCategories = departmentId => async dispatch => {
       fetchError: false
     });
   } catch (error) {
-    console.log(error);
     dispatch({
       type: FETCH_CATEGORIES_FAILURE,
       fetchError: true,
       isFetching: false,
-      errorMessage: error.message
+      error: error.response
     });
   }
 };

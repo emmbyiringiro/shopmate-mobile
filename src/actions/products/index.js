@@ -17,6 +17,7 @@ import {
 import store from "./../../store";
 import { API_URL } from "./../../constants";
 
+// Get product by specific category as route params
 export const getProducts = (
   requestUrl,
   { page, limit, description_length }
@@ -38,10 +39,8 @@ export const getProducts = (
       type: FETCH_PRODUCTS_FAILURE,
       fetchError: true,
       isFetching: false,
-      errorMessage: error
+      error: error.response
     });
-
-    console.log(error);
   }
 };
 
@@ -59,26 +58,12 @@ export const searchProducts = ({ search }) => async dispatch => {
       isFetching: false,
       fetchError: false
     });
-  } catch (err) {
+  } catch (error) {
     dispatch({
       type: SEARCH_PRODUCTS_FAILURE,
       fetchError: true,
-      isFetching: false
+      isFetching: false,
+      error: error.response
     });
   }
-};
-
-// Toggle add to cart "ON/OFF"
-export const toggleInCart = id => {
-  const { products, cart } = store.getState();
-  let tempProducts = [...products];
-  let tempCart = [...cart];
-
-  const product = tempProducts.find(product => product.product_id === id);
-  const inCart = !product.inCart;
-  product.inCart = inCart;
-
-  tempCart = tempCart.filter(product => product.inCart === true);
-
-  return { type: TOGGLE_INCART, tempProducts, tempCart };
 };

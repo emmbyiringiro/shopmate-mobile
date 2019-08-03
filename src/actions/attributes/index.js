@@ -13,7 +13,6 @@ export const getProductAttributes = productId => async dispatch => {
   try {
     const response = await fetch(`${ENDPOINT_URL}`);
     const data = await response.json();
-
     dispatch({
       type: FETCH_PRODUCT_ATTRIBUTES_SUCCESS,
       items: data,
@@ -21,12 +20,11 @@ export const getProductAttributes = productId => async dispatch => {
       fetchError: false
     });
   } catch (error) {
-    console.log(error);
     dispatch({
       type: FETCH_PRODUCT_ATTRIBUTES_FAILURE,
       fetchError: true,
       isFetching: false,
-      errorMessage: error.message
+      error: error.response
     });
   }
 };

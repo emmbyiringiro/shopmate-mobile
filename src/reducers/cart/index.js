@@ -21,16 +21,14 @@ import {
   UPDATE_PRODUCT_INCART_FAILURE
 } from "../../actions/cart/types";
 
-/* -------------------------- */
-/*  Generate cart id  */
-/* ------------------------- */
-const initialCartId = {
+//--- Generate cartID reducer ----
+const initialCartIdState = {
   cartId: null,
   fetchError: false,
   isFetching: false,
-  errorMessage: ""
+  error: null
 };
-export const cartId = (state = initialCartId, action) => {
+export const cartId = (state = initialCartIdState, action) => {
   switch (action.type) {
     case GENERATE_CART_ID_START:
       return {
@@ -51,7 +49,7 @@ export const cartId = (state = initialCartId, action) => {
         ...state,
         fetchError: action.fetchError,
         isFetching: action.isFetching,
-        errorMessage: action.errorMessage
+        error: action.error
       };
     case GET_CART_ID_LOCAL:
       return {
@@ -62,15 +60,12 @@ export const cartId = (state = initialCartId, action) => {
       return state;
   }
 };
-
-/* -------------------------- */
-/*   Get cart Items by cart ID    */
-/* ------------------------- */
+// ---- cart item reducer  ----
 const initialInCartState = {
   result: [],
   fetchError: false,
   isFetching: false,
-  errorMessage: ""
+  error: null
 };
 export const cart = (state = initialInCartState, action) => {
   switch (action.type) {
@@ -92,7 +87,7 @@ export const cart = (state = initialInCartState, action) => {
         ...state,
         fetchError: action.fetchError,
         isFetching: action.isFetching,
-        errorMessage: action.errorMessage
+        error: action.error
       };
     case ADD_TO_CART_SUCCESS:
       return {
@@ -123,15 +118,13 @@ export const cart = (state = initialInCartState, action) => {
   }
 };
 
-/* -------------------------- */
-/*  Add product   to cart      */
-/* ------------------------- */
+//--- Add product to cart reducer ----
 const initialAddToCartState = {
   result: [],
   fetchError: false,
   isAddingToCart: false,
   addToCartError: false,
-  errorMessage: ""
+  error: null
 };
 export const addToCart = (state = initialAddToCartState, action) => {
   switch (action.type) {
@@ -154,21 +147,19 @@ export const addToCart = (state = initialAddToCartState, action) => {
         ...state,
         addToCartError: action.addToCartError,
         isAddingToCart: action.isAddingToCart,
-        errorMessage: action.errorMessage
+        error: action.error
       };
     default:
       return state;
   }
 };
 
-/* -------------------------- */
-/*  Remove product  inCart ---*/
-/* ------------------------- */
+// --- Remove product inCart reducer ----
 const initialRemoveToCartState = {
   productRemoved: false,
   removeToCartError: false,
   isAddingToCart: false,
-  errorMessage: ""
+  error: null
 };
 export const removeToCart = (state = initialRemoveToCartState, action) => {
   switch (action.type) {
@@ -190,21 +181,19 @@ export const removeToCart = (state = initialRemoveToCartState, action) => {
         ...state,
         removeToCartError: action.removeToCartError,
         isRemovingToCart: action.isRemovingToCart,
-        errorMessage: action.errorMessage
+        error: action.error
       };
     default:
       return state;
   }
 };
 
-/* --------------------------------- */
-/*  update  product inCart  actions */
-/* ------------------------------- */
+// --- Update product inCart reducer ----
 const initialUpdateProductState = {
   result: [],
   updateProductError: false,
   isUpdating: false,
-  errorMessage: ""
+  error: null
 };
 export const updateProductInCart = (
   state = initialUpdateProductState,
@@ -229,7 +218,7 @@ export const updateProductInCart = (
         ...state,
         updateProductError: action.updateProductError,
         isUpdating: action.isUpdating,
-        errorMessage: action.errorMessage
+        error: action.error
       };
     default:
       return state;

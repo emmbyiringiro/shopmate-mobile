@@ -80,7 +80,7 @@ class LoginForm extends Component {
             type="text"
             validate={[
               required({ msg: "Please Provide Your Active Email" }),
-              email({ msg: "Email you provide not valid" })
+              email({ msg: "Email you provide not Valid" })
             ]}
           />
 
