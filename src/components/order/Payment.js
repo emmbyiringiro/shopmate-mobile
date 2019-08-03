@@ -7,7 +7,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   AsyncStorage,
-  Picker
+  Picker,
+  KeyboardAvoidingView
 } from "react-native";
 import { Input, Button, Icon } from "react-native-elements";
 import RadioForm, {
@@ -45,7 +46,7 @@ class Payment extends Component {
     errorToken: null,
     amount: 0,
     regionId: 2,
-    shippingId: 2,
+    shippingId: 1,
     shippingCost: 20
   };
 
@@ -131,6 +132,7 @@ class Payment extends Component {
           this.setState({ regionId: value });
           this.props.getShippingOptions(value);
         }}
+        itemStyle={{ fontSize: 11 }}
       >
         {shippingRegions.map(region => {
           return (
@@ -159,17 +161,20 @@ class Payment extends Component {
       <Picker
         selectedValue={this.state.shippingId}
         onValueChange={value => {
-          this.setState({
-            shippingId: value
-          });
-
-          this.setState({
-            shippingCost: shippingOptions.find(
-              shipping => shipping.shipping_id === this.state.shippingId
-            )
-          });
-          console.log(this.state.shippingId, this.state.shippingCost);
+          this.setState(
+            {
+              shippingId: value
+            },
+            () => {
+              this.setState({
+                shippingCost: shippingOptions.find(
+                  shipping => shipping.shipping_id === this.state.shippingId
+                ).shipping_cost
+              });
+            }
+          );
         }}
+        itemStyle={{ fontSize: 11 }}
       >
         {shippingOptions.map(option => {
           return (
@@ -200,15 +205,18 @@ class Payment extends Component {
   _renderOrderTotals = () => {
     const { cart } = this.props;
 
-    const { taxPercentage } = this.state;
+    const { taxPercentage, shippingCost } = this.state;
+    let tax = calculateTaxAmount(cart, taxPercentage);
+    let subtotal = calculateOrderAmount(cart);
+    let total =
+      parseFloat(subtotal) + parseFloat(tax) + parseFloat(shippingCost);
 
     return (
       <View>
-        <Text>Tax : ${calculateTaxAmount(cart, taxPercentage)}</Text>
-        <Text> Subtotal : ${calculateOrderAmount(cart, 0)}</Text>
-        <Text style={styles.totalTextStyle}>
-          Total : $ {calculateOrderAmount(cart, taxPercentage)}
-        </Text>
+        <Text>Tax : ${tax}</Text>
+        <Text> Subtotal : ${subtotal}</Text>
+        <Text> Shipping Cost : ${shippingCost}</Text>
+        <Text style={styles.totalTextStyle}>Total : $ {total}</Text>
       </View>
     );
   };
@@ -262,29 +270,34 @@ class Payment extends Component {
     } = this.props;
 
     return (
-      <View style={styles.containerStyle}>
-        <View style={styles.headerStyle}>
-          <Text style={styles.headerTextStyle}> Order Information </Text>
-        </View>
+      <KeyboardAvoidingView
+        style={styles.containerStyle}
+        enabled
+        behavior="padding"
+      >
+        <Text style={styles.headerTextStyle}> Order Information </Text>
+
         <View style={styles.orderTotalContainer}>
           {this._renderTaxesOptions()}
           {this._renderOrderTotals()}
         </View>
-        {this._renderOrderDescription()}
-        <View style={styles.headerStyle}>
-          <Text style={{ fontWeight: "bold" }}> Ship my products to :</Text>
-        </View>
-        {this._renderShippingRegions()}
-        <View style={styles.headerStyle}>
-          <Text style={{ fontWeight: "bold" }}>
-            {" "}
-            Products will be shipped via :
-          </Text>
-        </View>
-        {this._renderShippingOptions()}
+        <Text style={{ fontWeight: "bold" }}> Ship my products to :</Text>
 
-        <View style={styles.placeOrderButtonContainer}>
+        {this._renderShippingRegions()}
+        <Text style={{ fontWeight: "bold" }}>
+          Products will be shipped via :
+        </Text>
+
+        {this._renderShippingOptions()}
+        {this._renderOrderDescription()}
+
+        <View>
           <Button
+            containerStyle={{
+              padding: 20,
+              alignItems: "flex-end",
+              justifyContent: "flex-end"
+            }}
             onPress={() => this.handleCardPayment()}
             type={paymentPending ? "clear" : "solid"}
             title="Place Order"
@@ -296,7 +309,7 @@ class Payment extends Component {
             loading={paymentPending}
           />
         </View>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -315,24 +328,18 @@ const mapStateToProps = state => {
   };
 };
 const styles = StyleSheet.create({
-  containerStyle: { flex: 1, backgroundColor: theme.gray, margin: 5 },
+  containerStyle: {
+    flex: 1,
+    backgroundColor: theme.gray,
+    margin: 5,
+    padding: 20
+  },
 
   sectionStyle: { paddingBottom: 15 },
-  headerStyle: {
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: theme.white,
-    padding: 10
-  },
 
   headerTextStyle: { fontWeight: "700", fontSize: 16 },
   totalTextStyle: { fontWeight: "700" },
-  placeOrderButtonContainer: {
-    justifyContent: "flex-end",
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: theme.white
-  },
+
   orderTotalContainer: {
     justifyContent: "space-around",
     alignItems: "center",

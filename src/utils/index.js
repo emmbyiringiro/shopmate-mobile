@@ -151,14 +151,11 @@ export const calculateTaxAmount = (cart, taxPercentage) => {
 /*
  * return order amount include tax
  */
-export const calculateOrderAmount = (cart, tax) => {
-  result =
-    cart
-      .map(({ subtotal }) => {
-        return subtotal;
-      })
-      .reduce((total, subTotal) => Number(total) + Number(subTotal)) +
-    Number(tax);
-
+export const calculateOrderAmount = cart => {
+  result = cart
+    .map(({ subtotal }) => {
+      return subtotal;
+    })
+    .reduce((total, subTotal) => Number(total) + Number(subTotal));
   return Number(result).toFixed(2);
 };
