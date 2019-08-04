@@ -60,14 +60,19 @@ export const placeCustomerOrder = (
       },
       config
     );
+
     if (status === 200) {
       dispatch({
         type: PLACE_ORDER_SUCCESS,
         paymentPending: false,
+        customerPaid: true,
         result: data
       });
+
+      console.log(data);
     }
   } catch (error) {
+    console.log(error.response);
     dispatch({
       type: PLACE_ORDER_FAILURE,
       paymentPending: false,

@@ -18,7 +18,9 @@ import {
   // Update products inCart
   UPDATE_PRODUCT_INCART_START,
   UPDATE_PRODUCT_INCART_SUCCESS,
-  UPDATE_PRODUCT_INCART_FAILURE
+  UPDATE_PRODUCT_INCART_FAILURE,
+  //Empty user cart
+  EMPTY_USER_CART
 } from "./types";
 
 import axios from "axios";

@@ -1,4 +1,4 @@
-/* @flow */
+/*  Component which provide taxes, shipping and payment options,.... */
 
 import React, { Component } from "react";
 import {
@@ -89,7 +89,7 @@ class Payment extends Component {
     // Backend API  restricted amount not  less than 50 cents - convert
     // amount to dollar currency by * 100
     amount = Number(amount) * 100;
-    amount = amount.toFixed(2);
+    amount = amount.toFixed();
 
     // create order params object
     const order = {
@@ -106,7 +106,7 @@ class Payment extends Component {
     };
 
     authToken = await retrieveAuthenticationToken();
-    this.props.placeCustomerOrder(order, stripe, authToken);
+    await this.props.placeCustomerOrder(order, stripe, authToken);
   };
   handleCardPayment = async () => {
     try {
@@ -114,7 +114,8 @@ class Payment extends Component {
       const { tokenId } = await Stripe.paymentRequestWithCardFormAsync();
 
       this.setState({ stripeToken: tokenId });
-      this.payWithCard();
+      // Charge customer card
+      await this.payWithCard();
     } catch (error) {
       console.log(error);
       this.setState({ errorToken: error });
@@ -330,7 +331,7 @@ const mapStateToProps = state => {
     isshippingRegionsFetching: state.shippingRegions.isFetching,
     shippingOptions: state.shippingOptions.result,
     isShippingOptionsFetching: state.shippingOptions.isFetching,
-    customerPaid: state.placeOrder.result.paid,
+    customerPaid: state.placeOrder.customerPaid,
     paymentPending: state.placeOrder.paymentPending
   };
 };
@@ -357,5 +358,10 @@ const styles = StyleSheet.create({
 
 export default connect(
   mapStateToProps,
-  { getTaxes, getShippingRegions, placeCustomerOrder, getShippingOptions }
+  {
+    getTaxes,
+    getShippingRegions,
+    placeCustomerOrder,
+    getShippingOptions
+  }
 )(Payment);

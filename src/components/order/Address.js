@@ -22,7 +22,7 @@ import { getShippingRegions } from "../../actions/shipping-regions";
 import {
   SHOPMATE_CUSTOMER_ADDRESS,
   DEVICE_HEIGHT,
-  UPDATE_CUSTOMER_ADDRESS_ENDPOINT
+  API_URL
 } from "../../constants";
 import {
   retrieveAuthenticationToken,
@@ -94,16 +94,14 @@ class Address extends Component {
 
     try {
       const { data } = await axios.put(
-        UPDATE_CUSTOMER_ADDRESS_ENDPOINT,
+        `${API_URL}/customers/address`,
         formValues,
         config
       );
 
       this.setState({ isLoading: false });
-      console.log(data);
     } catch (error) {
       this.setState({ isLoading: false });
-      console.log(error.message);
     }
   };
   _renderAddressInputs = ({ label, input, meta: { touched, error } }) => {

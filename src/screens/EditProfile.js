@@ -37,7 +37,9 @@ class EditProfile extends Component {
   };
   async componentDidMount() {
     const { customerInfo, getCustomerInfo } = this.props;
+
     const authToken = await retrieveAuthenticationToken();
+
     if (!customerInfo.length && authToken) {
       await this.props.getCustomerInfo(authToken);
     }

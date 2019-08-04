@@ -20,7 +20,8 @@ const initialPlaceOrderState = {
   result: [],
   paymentError: false,
   paymentPending: false,
-  error: null
+  error: null,
+  customerPaid: null
 };
 export const placeOrder = (state = initialPlaceOrderState, action) => {
   switch (action.type) {
@@ -36,6 +37,7 @@ export const placeOrder = (state = initialPlaceOrderState, action) => {
         ...state,
         result: action.result,
         paymentPending: action.paymentPending,
+        customerPaid: action.customerPaid,
         paymentError: action.paymentError
       };
 

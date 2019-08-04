@@ -11,7 +11,12 @@ import {
 } from "react-native";
 import { Image, Rating, Button, Icon } from "react-native-elements";
 import RadioButton from "../components/common/RadioButton";
+import ReviewsList from "../components/reviews/ReviewsList";
+import AddReview from "../components/reviews/AddReview";
+import NumericInput from "react-native-numeric-input";
+
 import { connect } from "react-redux";
+
 import {
   DEVICE_WIDTH,
   IMG_URL_ENDPOINT,
@@ -21,9 +26,6 @@ import { thumToImage, thumToImage2, validateQuantity } from "./../../src/utils";
 import { theme } from "./../color-themes";
 import { addToCart } from "./../actions/cart/";
 import { getProductAttributes } from "../actions/attributes";
-import ReviewsList from "../components/reviews/ReviewsList";
-import AddReview from "../components/reviews/AddReview";
-import NumericInput from "react-native-numeric-input";
 
 import CartTotals from "./../components/cart/CartTotals";
 import AuthenticateModal from "../components/authentication/AuthenticateModal";

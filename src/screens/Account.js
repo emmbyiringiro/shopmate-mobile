@@ -1,21 +1,26 @@
 import React, { Component } from "react";
 import { Text, View } from "react-native";
 import { Button } from "react-native-elements";
-import { connect } from "react-redux";
-
 import Authenticate from "../components/authentication/Authenticate";
 import AuthSuccess from "../components/authentication/AuthSuccess";
+
+import { connect } from "react-redux";
+
 import { authenticateUser } from "../actions/services";
 import { removeAuthenticationToken, removesShippingAddress } from "../utils";
+
 class Account extends Component {
   static navigationOptions = {
     title: `Account`
   };
-  signOut = () => {
-    removeAuthenticationToken();
-    removesShippingAddress(() => {
+  signOut = async () => {
+    // Remove user authentication  token
+    await removeAuthenticationToken();
+    // Remove Pre-saved shipping address
+    await removesShippingAddress(() => {
       console.log("Shipping Address removed");
     });
+    // Sign-out user
     this.props.authenticateUser(false);
   };
   render() {

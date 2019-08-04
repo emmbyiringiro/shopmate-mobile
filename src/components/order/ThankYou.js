@@ -1,13 +1,28 @@
+/* Thank You Page after order payment
+ * and suggest  other products customer  ciuld buy
+ */
+
 import React, { Component } from "react";
 import { Text, View, StyleSheet, Dimensions } from "react-native";
 import { Icon } from "react-native-elements";
 import ProductList from "../products/ProductList";
 import { theme } from "../../color-themes";
-
+import { SHOPMATE_CART_ID } from "../../constants";
+import { getProductInCart } from "../../actions/cart";
+import { connect } from "react-redux";
 class ThankYou extends Component {
   static navigationOptions = {
     header: null
   };
+
+  async componentDidMount() {
+    if (this.props.customerPaid) {
+      // Fetch Again cart item - Which return
+      // empty in order to update user cart
+      const cartId = await AsyncStorage.getItem(SHOPMATE_CART_ID);
+      this.props.getProductInCart(cartId);
+    }
+  }
   render() {
     return (
       <View style={styles.containerStyle}>
@@ -48,4 +63,7 @@ const styles = StyleSheet.create({
     padding: 20
   }
 });
-export default ThankYou;
+export default connect(
+  null,
+  { getProductInCart }
+)(ThankYou);

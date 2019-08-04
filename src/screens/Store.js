@@ -1,20 +1,28 @@
+/*
+ *  This Screen serve as app entry point. It container
+ *   department, categories, search and application header.
+ */
 import React, { Component } from "react";
 import { View, StyleSheet, Dimensions, AsyncStorage } from "react-native";
-import { connect } from "react-redux";
 import ProductList from "./../components/products/ProductList";
 import Header from "./../components/common/Header";
-import { getDepartments } from "./../actions/departments";
-import { authenticateUser } from "../actions/services";
-import { getProductInCart } from "../actions/cart";
 import Departments from "./../components/departments/Departments";
 import Categories from "./../components/categories/Categories";
 import Search from "./../components/common/Search";
+
+import { connect } from "react-redux";
+
+import { getDepartments } from "./../actions/departments";
+import { authenticateUser } from "../actions/services";
+import { getProductInCart } from "../actions/cart";
+
 import {
   SHOPMATE_LOGIN_TOKEN,
   SHOPMATE_CUSTOMER_ADDRESS,
   SHOPMATE_CART_ID
 } from "../constants";
 import { retrieveAuthenticationToken } from "../utils";
+
 class Store extends Component {
   static navigationOptions = {
     header: null
@@ -29,12 +37,9 @@ class Store extends Component {
     retrieveAuthenticationToken(() => {
       this.props.authenticateUser(true);
     });
-    //  await AsyncStorage.removeItem(SHOPMATE_CART_ID);
-    // get product incart
+    // get products incart when available
     const cartId = await AsyncStorage.getItem(SHOPMATE_CART_ID);
     cartId ? getProductInCart(cartId) : null;
-
-    console.log(cartId);
   }
 
   render() {

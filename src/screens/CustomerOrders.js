@@ -1,4 +1,5 @@
-/* Component dispay loggedIn customer orders */
+/* Component dispay loggedIn customer orders  and
+ *  products in every order*/
 
 import React, { Component } from "react";
 import {
@@ -15,8 +16,8 @@ import {
   AccordionList
 } from "accordion-collapse-react-native";
 
+import { Button } from "react-native-elements";
 import { connect } from "react-redux";
-
 import { getCustomerOrders, getOrderProducts } from "../actions/order";
 import {
   retrieveAuthenticationToken,
@@ -89,7 +90,8 @@ class CustomerOrders extends Component {
       customerOrders,
       currentOrder,
       isFetchingProducts,
-      isFetchingOrders
+      isFetchingOrders,
+      loggedIn
     } = this.props;
     const { isCollapsed, activeOrder } = this.state;
 
@@ -101,9 +103,23 @@ class CustomerOrders extends Component {
           <ActivityIndicator size="large" color={theme.primary} />
         </View>
       );
-    }
-
-    if (!customerOrders.length && !isFetchingProducts) {
+    } else if (!loggedIn) {
+      return (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <Text> Please log in your account to view your orders</Text>
+          <Button
+            onPress={() => {
+              this.props.navigation.navigate("Account");
+            }}
+            title="Sign In"
+            type="clear"
+            titleStyle={{ color: theme.primary }}
+          />
+        </View>
+      );
+    } else if (!customerOrders.length && !isFetchingProducts) {
       return (
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
@@ -130,7 +146,7 @@ class CustomerOrders extends Component {
               <View>
                 <Text
                   style={
-                    isCollapsed && activeOrder === order.order_id
+                    activeOrder === order.order_id
                       ? styles.headerCollapseTextStyleActive
                       : styles.headerCollapseTextStyle
                   }
@@ -142,7 +158,7 @@ class CustomerOrders extends Component {
               <View>
                 <Text
                   style={
-                    isCollapsed && activeOrder === order.order_id
+                    activeOrder === order.order_id
                       ? styles.headerCollapseTextStyleActive
                       : styles.headerCollapseTextStyle
                   }
@@ -155,7 +171,7 @@ class CustomerOrders extends Component {
               <View>
                 <Text
                   style={
-                    isCollapsed && activeOrder === order.order_id
+                    activeOrder === order.order_id
                       ? styles.headerCollapseTextStyleActive
                       : styles.headerCollapseTextStyle
                   }
@@ -198,7 +214,8 @@ const mapStateToProps = state => {
     customerOrders: state.customerOrders.result,
     currentOrder: state.order.result,
     isFetchingProducts: state.order.isFetching,
-    isFetchingOrders: state.customerOrders.isFetching
+    isFetchingOrders: state.customerOrders.isFetching,
+    loggedIn: state.loggedIn
   };
 };
 
@@ -222,7 +239,7 @@ const OrderItems = ({
       <Text style={styles.orderItemTextStyle}> Unit Price : $ {unit_cost}</Text>
       <Text style={styles.orderItemTextStyle}>
         {" "}
-        SubTotal Price : $ {subtotal}
+        Subtotal Price : $ {subtotal}
       </Text>
     </View>
   );
@@ -263,15 +280,14 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 20,
     borderTopWidth: 1,
-    borderTopColor: theme.gray,
+    borderTopColor: theme.secondary,
     borderBottomWidth: 1,
-    borderBottomColor: theme.gray
+    borderBottomColor: theme.secondary,
+    backgroundColor: theme.gray
   },
   orderItemContainerStyle: {
     margin: 5,
-    paddingBottom: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.secondary
+    paddingBottom: 5
   },
   orderItemTextStyle: { color: "#333333", fontSize: 12 }
 });

@@ -13,6 +13,7 @@ import Authenticate from "./../authentication/Authenticate";
 import AuthSuccess from "./../authentication/AuthSuccess";
 export class CheckoutWrapper extends Component {
   state = { errors: true };
+
   defaultScrollViewProps = {
     contentContainerStyle: {
       marginBottom: 60
@@ -117,7 +118,7 @@ export class CheckoutWrapper extends Component {
 const mapStateToProps = state => {
   return {
     loggedIn: state.loggedIn,
-    customerPaid: state.placeOrder.result.paid,
+    customerPaid: state.placeOrder.customerPaid,
     paymentPending: state.placeOrder.paymentPending
   };
 };
