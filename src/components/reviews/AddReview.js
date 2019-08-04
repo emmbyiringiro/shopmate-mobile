@@ -1,14 +1,19 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, ToastAndroid } from "react-native";
 import { Input, Rating, Button } from "react-native-elements";
-import { theme } from "../../color-themes";
+
 import { connect } from "react-redux";
 import axios from "axios";
+import PropTypes from "prop-types";
+
 import { retrieveAuthenticationToken } from "../../utils";
 import { API_URL } from "../../constants";
 import { getProductReviews } from "./../../actions/reviews";
+import { theme } from "../../color-themes";
 
 class AddReview extends Component {
+  static propTypes = { productId: PropTypes.number };
+
   state = { rating: 2, review: "", isSubmitting: false, errorMessage: null };
   ratingComplete = rating => {
     this.setState({ rating });
@@ -102,11 +107,13 @@ class AddReview extends Component {
               padding: 20
             }}
             onPress={this.onSubmit}
-            type="solid"
+            type={this.state.isSubmitting ? "clear" : "solid"}
             title="Add Review"
             iconRight
             buttonStyle={{
-              backgroundColor: theme.primary
+              backgroundColor: this.state.isSubmitting
+                ? "transparent"
+                : theme.primary
             }}
             loading={this.state.isSubmitting}
           />

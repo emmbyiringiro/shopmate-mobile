@@ -92,8 +92,17 @@ class SignupForm extends Component {
 
           <View style={{ padding: 20 }}>
             <Button
+              type={this.state.isFormSubmitting ? "clear" : "solid"}
+              containerStyle={{
+                justifyContent: "flex-end",
+                alignItems: "flex-end"
+              }}
               title="Signup Now"
-              buttonStyle={{ backgroundColor: theme.primary }}
+              buttonStyle={{
+                backgroundColor: this.state.isFormSubmitting
+                  ? "transparent"
+                  : theme.primary
+              }}
               onPress={this.props.handleSubmit(this.onSubmit)}
               loading={this.state.isFormSubmitting}
             />

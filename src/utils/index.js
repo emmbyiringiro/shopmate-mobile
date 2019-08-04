@@ -1,6 +1,6 @@
 /** A collection of helpfully functions
  * which used by different components
- * across project
+ * across app
  */
 
 import store from "./../store";
@@ -8,11 +8,15 @@ import { SHOPMATE_LOGIN_TOKEN, SHOPMATE_CUSTOMER_ADDRESS } from "../constants";
 import { AsyncStorage } from "react-native";
 
 /**  trim string description to specified limit
- *
+ *  default limit=55
  */
 export const excerpt = (description, limit = 55) => {
   let excerpt = description.substring(0, limit);
-  return excerpt + "...";
+
+  if (limit > 55) {
+    return excerpt + "...";
+  }
+  return excerpt;
 };
 
 /**
@@ -29,7 +33,7 @@ export const storeAuthenticationToken = async (token, resolved, rejected) => {
   try {
     await AsyncStorage.setItem(`${SHOPMATE_LOGIN_TOKEN}`, `${token}`);
     if (resolved) {
-      resolved();
+      resolved(token);
     }
     console.log("Authentication token saved ");
   } catch (error) {
@@ -46,7 +50,7 @@ export const storeAuthenticationToken = async (token, resolved, rejected) => {
 export const removeAuthenticationToken = async () => {
   try {
     const token = await AsyncStorage.removeItem(`${SHOPMATE_LOGIN_TOKEN}`);
-    console.log(token);
+    console.log(" Removed token is :", token);
   } catch (error) {
     console.log("Ooops, authentication Token removal fail", error);
   }

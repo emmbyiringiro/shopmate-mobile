@@ -1,4 +1,4 @@
-/* @flow */
+/* Component collect user shipping address information  */
 
 import React, { Component } from "react";
 import {
@@ -11,9 +11,12 @@ import {
   ActivityIndicator
 } from "react-native";
 import { Button, Input, Icon } from "react-native-elements";
+
+import PropTypes from "prop-types";
 import { required, email, numericality } from "redux-form-validators";
 import axios from "axios";
 import { connect } from "react-redux";
+
 import { theme } from "../../color-themes";
 import { getShippingRegions } from "../../actions/shipping-regions";
 import {
@@ -30,6 +33,7 @@ import {
 import { Field, reduxForm } from "redux-form";
 
 class Address extends Component {
+  static propTypes = { onAddressSubmitted: PropTypes.func };
   state = {
     error: "",
     initialAddress: {
@@ -65,7 +69,6 @@ class Address extends Component {
   // form validation complete
   onSubmit = async formValues => {
     this.setState({ isLoading: true });
-    // Switch  OFF  edit  mode
 
     // a helper function which retrieve JWToken stored
     //on  user device and use it to authenticate user

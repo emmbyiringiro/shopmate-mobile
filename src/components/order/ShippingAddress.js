@@ -14,7 +14,7 @@ export default class ShippingAddress extends Component {
     }
   }
 
-  renderShippingAddress = () => {
+  _renderShippingAddress = () => {
     const { shippingAddress } = this.state;
     if (Object.keys(shippingAddress).length !== 0) {
       const {
@@ -44,6 +44,6 @@ export default class ShippingAddress extends Component {
     return <Text> No shipping address available</Text>;
   };
   render() {
-    return this.renderShippingAddress();
+    return this._renderShippingAddress();
   }
 }

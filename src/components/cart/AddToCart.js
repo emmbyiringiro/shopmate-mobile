@@ -1,16 +1,20 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, ToastAndroid } from "react-native";
 import { Button, Overlay, Icon } from "react-native-elements";
+import RadioButton from "../common/RadioButton";
+import NumericInput from "react-native-numeric-input";
+
 import { connect } from "react-redux";
+import _ from "lodash";
+import PropTypes from "prop-types";
+
 import { theme } from "./../../color-themes";
 import { DEVICE_HEIGHT } from "./../../constants";
-import NumericInput from "react-native-numeric-input";
-import _ from "lodash";
 import { updateProductInCart, addToCart } from "../../actions/cart";
-import RadioButton from "../common/RadioButton";
 import { getProductAttributes } from "../../actions/attributes";
 
 class AddToCart extends Component {
+  static propTypes = { toggleModal: PropTypes.func };
   state = {
     colorAttribute: "White",
     sizeAttribute: "XL",
@@ -111,6 +115,7 @@ class AddToCart extends Component {
             await this.props.addToCart(params);
             if (!addToCartError) {
               ToastAndroid.show(`${name} added to cart`, ToastAndroid.SHORT);
+              this.props.toggleModal();
             }
           }}
           type="clear"

@@ -1,10 +1,16 @@
+/* A Component provide user ability to review
+ * order items and shipping region  before she  proceed
+ * with payment
+ */
+
 import React, { Component } from "react";
 import { View, Text, ScrollView, StyleSheet } from "react-native";
-import { connect } from "react-redux";
+
 import CartList from "./../../components/cart/CartList";
 import CartTotal from "./../cart/CartTotals";
-import { theme } from "../../color-themes";
 import ShippingAddress from "./ShippingAddress";
+
+import { theme } from "../../color-themes";
 
 export class OrderReview extends Component {
   render() {
@@ -13,7 +19,7 @@ export class OrderReview extends Component {
         {/* Customer Order details section*/}
         <View style={styles.sectionStyle}>
           <View style={[styles.headerStyle, { flexDirection: "row" }]}>
-            <Text style={styles.headerTextStyle}>Your Order :</Text>
+            <Text style={styles.headerTextStyle}>Order amount :</Text>
             <CartTotal />
           </View>
           <CartList {...this.props} displayedInReview={true} />
@@ -32,10 +38,6 @@ export class OrderReview extends Component {
   }
 }
 
-const mapStateToProps = state => ({});
-
-const mapDispatchToProps = {};
-
 const styles = StyleSheet.create({
   containerStyle: { flex: 1, backgroundColor: theme.gray, margin: 5 },
 
@@ -50,7 +52,4 @@ const styles = StyleSheet.create({
   headerTextStyle: { fontWeight: "700", fontSize: 16 }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OrderReview);
+export default OrderReview;

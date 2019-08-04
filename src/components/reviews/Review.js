@@ -1,11 +1,19 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Rating } from "react-native-elements";
+
+import PropTypes from "prop-types";
+
 import { theme } from "../../color-themes";
 import { DEVICE_WIDTH } from "../../constants";
 import { excerpt } from "../../utils";
 
 class Review extends Component {
+  static propTypes = {
+    rating: PropTypes.number,
+    review: PropTypes.string,
+    name: PropTypes.string
+  };
   render() {
     const { name, review, rating } = this.props.item;
 
@@ -24,7 +32,7 @@ class Review extends Component {
         </View>
         <View>
           <View style={styles.contentSectionStyle}>
-            <Text style={styles.reviewTextStyle}>{excerpt(review, 20)}</Text>
+            <Text style={styles.reviewTextStyle}>{excerpt(review, 40)}</Text>
           </View>
           <View style={styles.contentSectionStyle}>
             <Text style={styles.authorTextStyle}>{name}</Text>

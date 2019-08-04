@@ -102,9 +102,14 @@ class LoginForm extends Component {
               justifyContent: "flex-end",
               alignItems: "flex-end"
             }}
+            type={this.state.isSubmitting ? "clear" : "solid"}
             onPress={handleSubmit(this.onSubmit)}
             title="Login"
-            buttonStyle={{ backgroundColor: theme.primary }}
+            buttonStyle={{
+              backgroundColor: this.state.isSubmitting
+                ? "transparent"
+                : theme.primary
+            }}
             loading={this.state.isSubmitting}
           />
           <View

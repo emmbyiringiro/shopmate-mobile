@@ -67,23 +67,29 @@ class Payment extends Component {
       await this.props.getShippingRegions();
     }
   }
-  placeOrderBackend = async () => {
+  payWithCard = async () => {
     const {
       stripeToken,
       description,
       taxId,
       taxPercentage,
-      shippingId
+      shippingId,
+      shippingCost
     } = this.state;
 
     const { cart } = this.props;
     // current customer cart id
     const cartId = await AsyncStorage.getItem(SHOPMATE_CART_ID);
     // total order amount
-    let amount = calculateOrderAmount(cart, taxPercentage);
+
+    let tax = calculateTaxAmount(cart, taxPercentage);
+    let subtotal = calculateOrderAmount(cart);
+    let amount =
+      parseFloat(subtotal) + parseFloat(tax) + parseFloat(shippingCost);
     // Backend API  restricted amount not  less than 50 cents - convert
     // amount to dollar currency by * 100
     amount = Number(amount) * 100;
+    amount = amount.toFixed(2);
 
     // create order params object
     const order = {
@@ -108,7 +114,7 @@ class Payment extends Component {
       const { tokenId } = await Stripe.paymentRequestWithCardFormAsync();
 
       this.setState({ stripeToken: tokenId });
-      this.placeOrderBackend();
+      this.payWithCard();
     } catch (error) {
       console.log(error);
       this.setState({ errorToken: error });
@@ -193,7 +199,7 @@ class Payment extends Component {
       <Input
         label="Order description"
         labelStyle={{ fontSize: 15, color: theme.black }}
-        placeholder="Ship to ...."
+        placeholder=" order specific information (optional)"
         inputStyle={{ fontSize: 14 }}
         multiline={true}
         numberOfLines={3}
@@ -210,6 +216,7 @@ class Payment extends Component {
     let subtotal = calculateOrderAmount(cart);
     let total =
       parseFloat(subtotal) + parseFloat(tax) + parseFloat(shippingCost);
+    total = total.toFixed(2);
 
     return (
       <View>

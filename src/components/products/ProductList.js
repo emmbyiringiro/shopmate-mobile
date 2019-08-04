@@ -1,25 +1,28 @@
 import React, { Component } from "react";
 import { View, Text, ActivityIndicator, AsyncStorage } from "react-native";
-import { connect } from "react-redux";
 import Grid from "react-native-grid-component";
-import { getProducts } from "./../../actions/products";
-import { generateCartId } from "../../actions/cart";
 import Product from "./Product";
 import NetworkError from "./../NetworkErrors/NetworkError";
+
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+
+import { getProducts } from "./../../actions/products";
+import { generateCartId } from "../../actions/cart";
 import { theme } from "./../../color-themes";
 import { SHOPMATE_CART_ID, API_URL } from "../../constants";
 import store from "../../store";
 import { GET_CART_ID_LOCAL } from "../../actions/cart/types";
 
 class ProductList extends Component {
+  static propTypes = { products: PropTypes.array.isRequired };
   async componentDidMount() {
     // Fetch Products
     let params = { page: 1, limit: 10, description_length: 55 };
     this.props.getProducts("/products", params);
+
     // Generate Cart ID if not available on user device
     let cartId = await AsyncStorage.getItem(`${SHOPMATE_CART_ID}`);
-
-    console.log(cartId);
 
     if (cartId === null) {
       this.props.generateCartId();
@@ -69,7 +72,7 @@ class ProductList extends Component {
             justifyContent: "center"
           }}
         >
-          <Text> No product(s) found</Text>
+          <Text> No product(s) found with your search term</Text>
         </View>
       );
     }

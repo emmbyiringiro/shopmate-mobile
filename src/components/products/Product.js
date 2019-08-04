@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet, TouchableHighlight } from "react-native";
 import { Card, Icon, Button } from "react-native-elements";
+import AddToCart from "../cart/AddToCart";
+
 import { connect } from "react-redux";
+
 import { theme } from "./../../color-themes";
 import { thumToImage } from "./../../utils";
 import { getProductReviews } from "../../actions/reviews";
 import { DEVICE_WIDTH, IMG_URL_ENDPOINT } from "./../../constants";
-import AddToCart from "../cart/AddToCart";
 
 class Product extends Component {
   state = { isAddedToCart: false, modalOpen: false };

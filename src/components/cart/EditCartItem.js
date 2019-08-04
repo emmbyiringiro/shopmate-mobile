@@ -61,6 +61,8 @@ class EditCartItem extends Component {
                 ` ${name} changed to ${productUnits} unit(s)`,
                 ToastAndroid.SHORT
               );
+
+              this.props.toggleModal();
             }
           }}
           type="clear"
