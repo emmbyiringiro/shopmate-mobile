@@ -11,11 +11,7 @@ import {
   KeyboardAvoidingView
 } from "react-native";
 import { Input, Button, Icon } from "react-native-elements";
-import RadioForm, {
-  RadioButton,
-  RadioButtonInput,
-  RadioButtonLabel
-} from "react-native-simple-radio-button";
+
 import { connect } from "react-redux";
 import { theme } from "../../color-themes";
 import {
@@ -29,6 +25,11 @@ import {
   getShippingOptions
 } from "../../actions/shipping-regions";
 import { SHOPMATE_CART_ID } from "../../constants";
+import RadioForm, {
+  RadioButton,
+  RadioButtonInput,
+  RadioButtonLabel
+} from "react-native-simple-radio-button";
 
 // This import applied to expo client environment only
 //it'll be switched to  import stripe from 'tipsi-stripe'  in production
@@ -198,6 +199,7 @@ class Payment extends Component {
   _renderOrderDescription = () => {
     return (
       <Input
+        keyboardType="visible-password"
         label="Order description"
         labelStyle={{ fontSize: 15, color: theme.black }}
         placeholder=" order specific information (optional)"

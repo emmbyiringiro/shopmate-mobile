@@ -4,7 +4,7 @@ import { required, email, length } from "redux-form-validators";
 import { Field, reduxForm } from "redux-form";
 import { Button, Input } from "react-native-elements";
 import axios from "axios";
-import { CUSTOMER_SIGNUP_ENDPOINT } from "../../constants";
+import { API_URL } from "../../constants";
 import { storeAuthenticationToken } from "../../utils";
 import { connect } from "react-redux";
 import { authenticateUser } from "../../actions/services";
@@ -18,7 +18,7 @@ class SignupForm extends Component {
     this.setState({ isFormSubmitting: true, error: "" });
     try {
       const { data, status } = await axios.post(
-        `${CUSTOMER_SIGNUP_ENDPOINT}`,
+        `${API_URL}/customers`,
         formValues
       );
 
@@ -30,23 +30,24 @@ class SignupForm extends Component {
         });
         this.setState({ isFormSubmitting: false });
       }
-    } catch ({ response }) {
+    } catch (error) {
       this.setState({ isFormSubmitting: false });
-      if (response.status === 400) {
-        this.setState({ error: response.data.error.message });
+      if (error.response.status === 400) {
+        this.setState({ error: "email is already exist" });
       }
 
-      if (response.status === 500) {
+      if (error.response.status === 500) {
         this.setState({ error: "Something went wrong" });
       }
     }
   };
 
-  renderLoginForm = ({ label, name, input, meta: { touched, error } }) => {
+  renderSignupInput = ({ label, name, input, meta: { touched, error } }) => {
     const { authenticateUser } = this.props;
     return (
       <Input
         {...input}
+        keyboardType="visible-password"
         placeholder={label}
         inputStyle={{ fontSize: 14 }}
         errorMessage={touched && error ? error : ""}
@@ -63,14 +64,14 @@ class SignupForm extends Component {
         <View style={styles.sectionStyleWhitBorder}>
           <Field
             name="name"
-            component={this.renderLoginForm}
+            component={this.renderSignupInput}
             label="Full Name"
             type="text"
             validate={[required({ msg: "Please Provide Your Name" })]}
           />
           <Field
             name="email"
-            component={this.renderLoginForm}
+            component={this.renderSignupInput}
             label=" Active Email"
             type="text"
             validate={[
@@ -81,7 +82,7 @@ class SignupForm extends Component {
 
           <Field
             name="password"
-            component={this.renderLoginForm}
+            component={this.renderSignupInput}
             label="Password"
             type="password"
             validate={[

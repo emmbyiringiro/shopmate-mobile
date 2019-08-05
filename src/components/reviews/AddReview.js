@@ -70,9 +70,9 @@ class AddReview extends Component {
       );
 
       resolve();
-    } catch ({ response }) {
-      const errorMessage = response.error.message;
-      reject(errorMessage);
+    } catch (error) {
+      console.log(error);
+      reject(error);
     }
   };
   render() {
@@ -85,6 +85,7 @@ class AddReview extends Component {
           onFinishRating={this.ratingComplete}
         />
         <Input
+          keyboardType="visible-password"
           label=" Add Review"
           labelStyle={{ fontSize: 15, color: theme.primary }}
           placeholder="write your review..."

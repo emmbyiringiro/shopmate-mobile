@@ -53,6 +53,7 @@ class LoginForm extends Component {
     return (
       <Input
         {...input}
+        keyboardType="visible-password"
         placeholder={label}
         errorMessage={touched && error ? error : ""}
         secureTextEntry={label === "Password" ? true : false}

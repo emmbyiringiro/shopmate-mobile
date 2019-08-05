@@ -108,6 +108,7 @@ class Address extends Component {
     return (
       <Input
         {...input}
+        keyboardType="visible-password"
         placeholder={label}
         errorMessage={touched && error ? error : ""}
         inputStyle={{

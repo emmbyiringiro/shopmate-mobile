@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from "react";
-import { Text, View, StyleSheet, Dimensions } from "react-native";
+import { Text, View, StyleSheet, Dimensions, AsyncStorage } from "react-native";
 import { Icon } from "react-native-elements";
 import ProductList from "../products/ProductList";
 import { theme } from "../../color-themes";
@@ -15,14 +15,6 @@ class ThankYou extends Component {
     header: null
   };
 
-  async componentDidMount() {
-    if (this.props.customerPaid) {
-      // Fetch Again cart item - Which return
-      // empty in order to update user cart
-      const cartId = await AsyncStorage.getItem(SHOPMATE_CART_ID);
-      this.props.getProductInCart(cartId);
-    }
-  }
   render() {
     return (
       <View style={styles.containerStyle}>
