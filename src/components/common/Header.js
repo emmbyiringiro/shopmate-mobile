@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Button, Icon, Image, withBadge } from "react-native-elements";
-import { Constants } from "expo";
+import Constants from 'expo-constants';
 import { AppDrawerNavigator } from "../../navigation";
 import { connect } from "react-redux";
 import { DEVICE_WIDTH } from "./../../constants";

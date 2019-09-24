@@ -31,10 +31,7 @@ import RadioForm, {
   RadioButtonLabel
 } from "react-native-simple-radio-button";
 
-// This import applied to expo client environment only
-//it'll be switched to  import stripe from 'tipsi-stripe'  in production
-import { DangerZone } from "expo";
-const { Stripe } = DangerZone;
+import {PaymentsStripe} from "expo-payments-stripe"
 import { placeCustomerOrder } from "../../actions/order";
 
 class Payment extends Component {
@@ -52,7 +49,7 @@ class Payment extends Component {
   };
 
   componentWillMount() {
-    Stripe.setOptionsAsync({
+    PaymentsStripe.setOptionsAsync({
       publishableKey: "pk_test_NcwpaplBCuTL6I0THD44heRe",
       androidPayMode: "test"
     });
@@ -112,7 +109,7 @@ class Payment extends Component {
   handleCardPayment = async () => {
     try {
       this.setState({ loadingToken: true, stripeToken: null });
-      const { tokenId } = await Stripe.paymentRequestWithCardFormAsync();
+      const { tokenId } = await PaymentsStripe.paymentRequestWithCardFormAsync();
 
       this.setState({ stripeToken: tokenId });
       // Charge customer card
