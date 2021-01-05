@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "accordion-collapse-react-native": "^0.1.11",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "expo": "^34.0.0",
     "expo-payments-stripe": "^7.0.0",
     "react": "16.8.3",
